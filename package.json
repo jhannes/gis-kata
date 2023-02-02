@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "scripts": {
     "start": "parcel watch src/main/frontend/index.html --dist-dir ./target/classes/web",
-    "build": "parcel build src/main/frontend/index.html --dist-dir ./target/classes/web",
+    "build:parcel": "parcel build src/main/frontend/index.html --dist-dir ./target/classes/web",
+    "build:tsc": "tsc --noEmit --project ./",
+    "build:check-format": "prettier --check src/main/frontend",
+    "build": "npm run build:tsc && npm run build:check-format && npm run build:parcel",
+    "format": "prettier --write src/main/frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
     "parcel": "2.7",
     "prettier": "^2.8.3",
     "process": "^0.11.10",
