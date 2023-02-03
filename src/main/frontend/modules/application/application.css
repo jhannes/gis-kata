@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+}
+
+#app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#app main {
+  display: flex;
+}
+
+#app main aside {
+  background-color: red;
+  padding: 0.5em;
+  overflow-y: auto;
+}
+
+#map {
+  flex: 1;
+  background-color: lightblue;
+}
