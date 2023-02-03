@@ -5,6 +5,8 @@ import { useGeographic } from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 
+import "ol/ol.css";
+
 useGeographic();
 
 const map = new Map({
