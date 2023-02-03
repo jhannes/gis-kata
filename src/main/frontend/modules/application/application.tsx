@@ -6,29 +6,36 @@ import {
   Routes,
   useParams,
 } from "react-router-dom";
+import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 
 export function Application() {
   return (
-    <BrowserRouter>
-      <header>
-        <h1>Hello Application</h1>
-      </header>
-      <main>
-        <aside id="menu-sidebar">
-          <nav>
-            <li>Home</li>
-            <li>Items</li>
-            <div className="spacer"></div>
-            <li>Help</li>
-          </nav>
-        </aside>
-        <main id="map"></main>
-        <ContentSidebar />
-      </main>
-      <footer>
-        Application by Johannes [<a href="/api-doc/">API doc</a>]
-      </footer>
-    </BrowserRouter>
+    <PageHeaderContext>
+      <BrowserRouter>
+        <ShowPageHeader>
+          <h1>Hello My Application</h1>
+        </ShowPageHeader>
+        <main>
+          <aside id="menu-sidebar">
+            <nav>
+              <li>
+                <Link to={"/"}>Home</Link>
+              </li>
+              <li>Items</li>
+              <div className="spacer"></div>
+              <li>
+                <Link to={"/settings"}>Settings</Link>
+              </li>
+            </nav>
+          </aside>
+          <main id="map"></main>
+          <ContentSidebar />
+        </main>
+        <footer>
+          Application by Johannes [<a href="/api-doc/">API doc</a>]
+        </footer>
+      </BrowserRouter>
+    </PageHeaderContext>
   );
 }
 
@@ -45,8 +52,12 @@ function ContentSidebar() {
 
 function Item() {
   const { id } = useParams();
+
   return (
     <>
+      <PageHeader>
+        <h1>Item {id}</h1>
+      </PageHeader>
       <Link to={"/"}>Back</Link>
       <h1>Element {id}</h1>
     </>
