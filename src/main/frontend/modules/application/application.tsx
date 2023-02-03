@@ -82,7 +82,9 @@ export function Application() {
           </ul>
         </aside>
       </main>
-      <footer>Application by Johannes</footer>
+      <footer>
+        Application by Johannes [<a href="/api-doc/">API doc</a>]
+      </footer>
     </>
   );
 }

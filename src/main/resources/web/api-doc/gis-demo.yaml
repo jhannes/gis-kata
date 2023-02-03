@@ -1,0 +1,26 @@
+openapi: 3.0.2
+info:
+  title: GIS Demo
+  description: A demo of a GIS application
+  version: 0.1.0
+paths:
+  /api/pets:
+    get:
+      operationId: listPets
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        name:
+          type: string
+        birth_date:
+          type: string
+          format: date
