@@ -1,11 +1,11 @@
-body {
+* {
   margin: 0;
 }
 
 #app {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
 #app main {
@@ -13,9 +13,19 @@ body {
 }
 
 #app main aside {
-  background-color: red;
+  background-color: orange;
   padding: 0.5em;
   overflow-y: auto;
+}
+
+#menu-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#menu-sidebar .spacer {
+  flex: 1;
 }
 
 #map {
