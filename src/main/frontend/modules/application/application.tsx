@@ -7,34 +7,37 @@ import {
   useParams,
 } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
+import { MapContextProvider, MapView } from "../map";
 
 export function Application() {
   return (
     <PageHeaderContext>
-      <BrowserRouter>
-        <ShowPageHeader>
-          <h1>Hello My Application</h1>
-        </ShowPageHeader>
-        <main>
-          <aside id="menu-sidebar">
-            <nav>
-              <li>
-                <Link to={"/"}>Home</Link>
-              </li>
-              <li>Items</li>
-              <div className="spacer"></div>
-              <li>
-                <Link to={"/settings"}>Settings</Link>
-              </li>
-            </nav>
-          </aside>
-          <main id="map"></main>
-          <ContentSidebar />
-        </main>
-        <footer>
-          Application by Johannes [<a href="/api-doc/">API doc</a>]
-        </footer>
-      </BrowserRouter>
+      <MapContextProvider>
+        <BrowserRouter>
+          <ShowPageHeader>
+            <h1>Hello My Application</h1>
+          </ShowPageHeader>
+          <main>
+            <aside id="menu-sidebar">
+              <nav>
+                <li>
+                  <Link to={"/"}>Home</Link>
+                </li>
+                <li>Items</li>
+                <div className="spacer"></div>
+                <li>
+                  <Link to={"/settings"}>Settings</Link>
+                </li>
+              </nav>
+            </aside>
+            <MapView />
+            <ContentSidebar />
+          </main>
+          <footer>
+            Application by Johannes [<a href="/api-doc/">API doc</a>]
+          </footer>
+        </BrowserRouter>
+      </MapContextProvider>
     </PageHeaderContext>
   );
 }
