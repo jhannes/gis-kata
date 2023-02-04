@@ -4,23 +4,59 @@ info:
   description: A demo of a GIS application
   version: 0.1.0
 paths:
-  /api/pets:
+  /geojson/schools.geojson:
     get:
-      operationId: listPets
+      operationId: listSchoolFeatures
       responses:
-        '200':
-          description: Successful
+        200:
+          description: Schools
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: '#/components/schemas/SchoolFeatureCollection'
 components:
   schemas:
-    Pet:
-      type: object
+    SchoolFeatureCollection:
+      allOf:
+        - $ref: "./schema/geojson.yaml#/FeatureCollection"
+        - properties:
+            features:
+              type: array
+              items:
+                $ref: "#/components/schemas/SchoolFeature"
+          required:
+            - features
+    SchoolFeature:
+      allOf:
+        - $ref: "./schema/geojson.yaml#/Feature"
+        - properties:
+            geometry:
+              $ref: "./schema/geojson.yaml#/Point"
+            properties:
+              $ref: "#/components/schemas/SchoolFeatureProperties"
+          required:
+            - properties
+    SchoolFeatureProperties:
       properties:
-        name:
+        navn:
           type: string
-        birth_date:
+        antall_elever:
+          type: integer
+          format: int32
+        antall_ansatte:
+          type: integer
+          format: int32
+        eierforhold:
           type: string
-          format: date
+          enum:
+            - offentlig
+            - privat
+        kommunenummer:
+          type: string
+          format: numeric
+      required:
+        - navn
+        - antall_ansatte
+        - antall_elever
+        - eierforhold
+        - kommunenummer

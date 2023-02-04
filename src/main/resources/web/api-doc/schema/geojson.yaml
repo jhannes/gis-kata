@@ -1,0 +1,137 @@
+FeatureCollection:
+  type: object
+  description: GeoJSon Feature collection
+  required:
+    - type
+    - crs
+    - features
+  externalDocs:
+    url: https://tools.ietf.org/html/rfc7946#section-3.3
+  properties:
+    type:
+      type: string
+      enum:
+        - FeatureCollection
+    crs:
+      $ref: "#/CoordinateReferenceSystem"
+    features:
+      type: array
+      items:
+        $ref: '#/Feature'
+
+Feature:
+  type: object
+  description: GeoJSon Feature
+  required:
+    - type
+    - geometry
+  externalDocs:
+    url: https://tools.ietf.org/html/rfc7946#section-3.2
+  properties:
+    type:
+      type: string
+      enum:
+        - Feature
+    id:
+      type: integer
+    geometry:
+      $ref: '#/Geometry'
+    properties:
+      type: object
+
+Geometry:
+  oneOf:
+    - $ref: '#/Point'
+    - $ref: '#/LineString'
+    - $ref: '#/Polygon'
+  discriminator:
+    propertyName: type
+
+Point:
+  properties:
+    type:
+      type: string
+      enum: [ Point ]
+    coordinates:
+      $ref: '#/Point3D'
+  required:
+    - type
+    - coordinates
+
+LineString:
+  properties:
+    type:
+      type: string
+      enum: [ LineString ]
+    coordinates:
+      type: array
+      items:
+        $ref: '#/Point3D'
+  required:
+    - type
+    - coordinates
+
+Polygon:
+  properties:
+    type:
+      type: string
+      enum: [ Polygon ]
+    coordinates:
+      type: array
+      items:
+        type: array
+        items:
+          $ref: '#/Point3D'
+  required:
+    - type
+    - coordinates
+
+Point3D:
+  type: array
+  description: Point in 3D space
+  externalDocs:
+    url: https://tools.ietf.org/html/rfc7946
+  minItems: 2
+  maxItems: 3
+  items:
+    type: number
+    format: double
+    example: [ 10, 60 ]
+
+GeometryCollection:
+  type: object
+  description: GeoJSon geometry collection
+  required:
+    - type
+    - geometries
+  externalDocs:
+    url: http://geojson.org/geojson-spec.html#geometrycollection
+  properties:
+    type:
+      type: string
+      enum:
+        - GeometryCollection
+    geometries:
+      type: array
+      items:
+        $ref: '#/Geometry'
+
+CoordinateReferenceSystem:
+  properties:
+    type:
+      type: string
+      enum:
+        - name
+    properties:
+      type: object
+      properties:
+        name:
+          type: string
+          enum:
+            - urn:ogc:def:crs:EPSG::4326
+            - urn:ogc:def:crs:EPSG::3857
+      required:
+        - name
+  required:
+    - type
+    - properties

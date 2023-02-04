@@ -1,6 +1,7 @@
 package com.soprasteria.gisdemo;
 
 import jakarta.servlet.UnavailableException;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
@@ -55,5 +56,7 @@ class DefaultServlet extends org.eclipse.jetty.servlet.DefaultServlet {
             getServletContext().setInitParameter("useFileMappedBuffer", "false");
         }
         super.init();
+        ContextHandler.getCurrentContext().getContextHandler().getMimeTypes()
+                .addMimeMapping("geojson", "application/json");
     }
 }
