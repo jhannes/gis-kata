@@ -17,6 +17,8 @@ import { OSM } from "ol/source";
 
 import "ol/ol.css";
 import { Layer } from "ol/layer";
+import { SimpleGeometry } from "ol/geom";
+import { FitOptions } from "ol/View";
 
 useGeographic();
 
@@ -65,4 +67,8 @@ export function useMapLayer(layer: Layer) {
     setFeatureLayers((layers) => [...layers, layer]);
     return () => setFeatureLayers((layers) => layers.filter((l) => l != layer));
   }, []);
+}
+
+export function useMapFit(target: SimpleGeometry, options: FitOptions) {
+  map.getView().fit(target, options);
 }

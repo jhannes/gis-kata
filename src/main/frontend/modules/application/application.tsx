@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
-import { ListSchools } from "../schools/schools";
+import { SchoolsRoute } from "../schools/schools";
 
 export function Application() {
   return (
@@ -51,7 +51,7 @@ function ContentSidebar() {
       <Routes>
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
-        <Route path={"/schools"} element={<ListSchools />} />
+        <Route path={"/schools/*"} element={<SchoolsRoute />} />
       </Routes>
     </aside>
   );
