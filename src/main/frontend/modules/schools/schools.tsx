@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PageHeader } from "../pageHeader";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { useMapFit, useMapLayer } from "../map";
+import { useMapFit, useMapLayer, useMapOverlay } from "../map";
 import {
   DefaultApi,
   SchoolFeatureCollectionDto,
@@ -57,6 +57,13 @@ function ShowSchool({ schools }: { schools: SchoolFeatureCollectionDto }) {
     })
   );
   useMapFit(schoolPoint, { maxZoom: 10 });
+  useMapOverlay(
+    <div>
+      <h3>{school.properties.navn}</h3>
+      <Link to={"/"}>Gå til »</Link>
+    </div>,
+    school.geometry.coordinates as number[]
+  );
 
   return (
     <div>

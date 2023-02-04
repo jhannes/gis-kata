@@ -14,6 +14,8 @@
 
 #app main aside {
   background-color: orange;
+  min-width: 15em;
+  max-width: 20em;
   padding: 0.5em;
   overflow-y: auto;
 }
