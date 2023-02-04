@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
+import { ListSchools } from "../schools/schools";
 
 export function Application() {
   return (
@@ -23,7 +24,9 @@ export function Application() {
                 <li>
                   <Link to={"/"}>Home</Link>
                 </li>
-                <li>Items</li>
+                <li>
+                  <Link to={"/schools"}>Schools</Link>
+                </li>
                 <div className="spacer"></div>
                 <li>
                   <Link to={"/settings"}>Settings</Link>
@@ -48,6 +51,7 @@ function ContentSidebar() {
       <Routes>
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
+        <Route path={"/schools"} element={<ListSchools />} />
       </Routes>
     </aside>
   );
