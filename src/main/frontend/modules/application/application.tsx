@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
-import { SchoolsRoute } from "../schools/schools";
+import { SchoolsRoute } from "../schools";
 
 export function Application() {
   return (
