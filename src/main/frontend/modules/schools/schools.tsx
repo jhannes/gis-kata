@@ -1,10 +1,15 @@
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "../pageHeader";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { useMapFit, useMapLayer, useMapOverlay } from "../map";
+import {
+  useMapFeatureSelect,
+  useMapFit,
+  useMapLayer,
+  useMapOverlay,
+} from "../map";
 import {
   DefaultApi,
   SchoolFeatureCollectionDto,
@@ -57,14 +62,6 @@ function ShowSchool({ schools }: { schools: SchoolFeatureCollectionDto }) {
     })
   );
   useMapFit(schoolPoint, { maxZoom: 10 });
-  useMapOverlay(
-    <div>
-      <h3>{school.properties.navn}</h3>
-      <Link to={"/"}>Gå til »</Link>
-    </div>,
-    school.geometry.coordinates as number[]
-  );
-
   return (
     <div>
       <h2>{school.properties.navn}</h2>
@@ -90,6 +87,25 @@ function ListSchools({ schools }: { schools: SchoolFeatureCollectionDto }) {
         ),
       }),
     })
+  );
+  const selectedFeatures = useMapFeatureSelect();
+  const selectedCoordinate = useMemo(
+    () =>
+      selectedFeatures.length > 0
+        ? (selectedFeatures[0].getGeometry() as Point).getCoordinates()
+        : undefined,
+    [selectedFeatures]
+  );
+  useMapOverlay(
+    selectedFeatures
+      .map((f) => f.getProperties() as SchoolFeaturePropertiesDto)
+      .map((s) => (
+        <div key={slugify(s)}>
+          <h3>{s.navn}</h3>
+          <Link to={`/schools/${slugify(s)}`}>Gå til »</Link>
+        </div>
+      )),
+    selectedCoordinate
   );
 
   return (

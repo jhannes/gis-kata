@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Dispatch,
   MutableRefObject,
-  ReactElement,
   ReactNode,
   SetStateAction,
   useContext,
@@ -11,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Map, Overlay, View } from "ol";
+import { Map, MapBrowserEvent, Overlay, View } from "ol";
 import { useGeographic } from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
@@ -21,6 +20,7 @@ import { Layer } from "ol/layer";
 import { SimpleGeometry } from "ol/geom";
 import { FitOptions } from "ol/View";
 import { MousePosition, OverviewMap, Zoom } from "ol/control";
+import { FeatureLike } from "ol/Feature";
 
 useGeographic();
 
@@ -32,15 +32,15 @@ const map = new Map({
   controls: [new Zoom(), new MousePosition({}), new OverviewMap()],
   view: new View({
     center: [10, 60],
-    zoom: 5,
+    zoom: 8,
   }),
 });
 
 const MapContext = React.createContext<{
   setFeatureLayers: Dispatch<SetStateAction<Layer[]>>;
   setOverlayPosition: Dispatch<SetStateAction<number[] | undefined>>;
-  overlayContent?: ReactElement;
-  setOverlayContent: Dispatch<SetStateAction<ReactElement | undefined>>;
+  overlayContent?: ReactNode | undefined;
+  setOverlayContent: Dispatch<SetStateAction<ReactNode | undefined>>;
 }>({
   setFeatureLayers: () => {},
   setOverlayPosition: () => {},
@@ -57,9 +57,7 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
   const [overlayPosition, setOverlayPosition] = useState<
     number[] | undefined
   >();
-  const [overlayContent, setOverlayContent] = useState<
-    ReactElement | undefined
-  >();
+  const [overlayContent, setOverlayContent] = useState<ReactNode | undefined>();
   useEffect(() => {
     overlay.setPosition(overlayPosition);
   }, [overlayPosition]);
@@ -106,11 +104,28 @@ export function useMapLayer(layer: Layer) {
   }, []);
 }
 
+export function useMapFeatureSelect() {
+  const [selectedFeatures, setSelectedFeatures] = useState<FeatureLike[]>([]);
+  function handleClick(e: MapBrowserEvent<MouseEvent>) {
+    setSelectedFeatures(map.getFeaturesAtPixel(e.pixel, {}));
+  }
+
+  useEffect(() => {
+    map.on("click", handleClick);
+    return () => map.un("click", handleClick);
+  }, []);
+
+  return selectedFeatures;
+}
+
 export function useMapFit(target: SimpleGeometry, options: FitOptions) {
   map.getView().fit(target, options);
 }
 
-export function useMapOverlay(children: ReactElement, position: number[]) {
+export function useMapOverlay(
+  children: ReactNode | undefined,
+  position: number[] | undefined
+) {
   const { setOverlayPosition, setOverlayContent } = useContext(MapContext);
   useEffect(() => {
     setOverlayPosition(position);
@@ -119,5 +134,5 @@ export function useMapOverlay(children: ReactElement, position: number[]) {
       setOverlayContent(undefined);
       setOverlayPosition(undefined);
     };
-  }, []);
+  }, [position]);
 }
