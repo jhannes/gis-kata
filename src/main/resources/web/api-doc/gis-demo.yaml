@@ -49,8 +49,8 @@ components:
         eierforhold:
           type: string
           enum:
-            - offentlig
-            - privat
+            - Offentlig
+            - Privat
         kommunenummer:
           type: string
           format: numeric
