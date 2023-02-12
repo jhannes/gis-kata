@@ -11,8 +11,10 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import * as React from "react";
-import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import { FeatureLike } from "ol/Feature";
+import { useClickOnSchool } from "./useClickOnSchool";
+import { schoolCircleStyle, textStyle } from "./style";
+import { useMemo } from "react";
 
 function schoolToFeature(school: SchoolFeatureDto) {
   const feature = new Feature({
@@ -23,43 +25,10 @@ function schoolToFeature(school: SchoolFeatureDto) {
   return feature;
 }
 
-const selectedStyle = new Style({
-  image: new Circle({
-    radius: 4,
-    stroke: new Stroke({ color: [0, 0, 0, 1] }),
-    fill: new Fill({
-      color: [255, 0, 0, 0.8],
-    }),
-  }),
-});
-const nonSelectedStyleOffentlig = new Style({
-  image: new Circle({
-    radius: 4,
-    stroke: new Stroke({ color: [0, 0, 0, 0.5] }),
-    fill: new Fill({
-      color: [255, 0, 0, 0.4],
-    }),
-  }),
-});
-const nonSelectedStylePrivat = new Style({
-  image: new Circle({
-    radius: 4,
-    stroke: new Stroke({ color: [0, 0, 0, 0.5] }),
-    fill: new Fill({
-      color: [128, 0, 255, 0.4],
-    }),
-  }),
-});
-
-function textStyle(text: string | string[] | undefined) {
-  return new Style({
-    text: new Text({
-      offsetY: 10,
-      text,
-      font: "Bold 14px Arial",
-    }),
-  });
-}
+const selectedStyleOffentlig = schoolCircleStyle([255, 0, 0]);
+const selectedStylePrivat = schoolCircleStyle([128, 0, 255]);
+const nonSelectedStyleOffentlig = schoolCircleStyle([255, 0, 0, 0.4]);
+const nonSelectedStylePrivat = schoolCircleStyle([128, 0, 255, 0.4]);
 
 export function ShowSchool({
   schools,
@@ -70,11 +39,19 @@ export function ShowSchool({
   const school = schools.features.find(
     (school) => slugify(school.properties) === id
   )!;
+  const schoolPoint = useMemo(
+    () => new Point(school.geometry.coordinates as number[]),
+    [school]
+  );
 
   function style(feature: FeatureLike) {
     const school = feature.getProperties() as SchoolFeaturePropertiesDto;
     if (feature.getId() == id) {
-      return [selectedStyle, textStyle(school.navn)];
+      const circleStyle =
+        school.eierforhold === "Offentlig"
+          ? selectedStyleOffentlig
+          : selectedStylePrivat;
+      return [circleStyle, textStyle(school.navn)];
     }
     return school.eierforhold === "Offentlig"
       ? nonSelectedStyleOffentlig
@@ -87,11 +64,14 @@ export function ShowSchool({
       source: new VectorSource({
         features: schools.features.map(schoolToFeature),
       }),
-    })
+    }),
+    [id]
   );
+  useClickOnSchool([id]);
 
-  useMapFit(new Point(school.geometry.coordinates as number[]), {
+  useMapFit(schoolPoint, {
     maxZoom: 10,
+    duration: 400,
   });
   return (
     <div>

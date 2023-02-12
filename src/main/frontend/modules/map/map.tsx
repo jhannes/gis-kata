@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  DependencyList,
   Dispatch,
   MutableRefObject,
   ReactNode,
@@ -96,18 +97,26 @@ export function MapView() {
   );
 }
 
-export function useMapLayer(layer: Layer) {
+export function useMapLayer(layer: Layer, deps: DependencyList = []) {
   const { setFeatureLayers } = useContext(MapContext);
   useEffect(() => {
     setFeatureLayers((layers) => [...layers, layer]);
     return () => setFeatureLayers((layers) => layers.filter((l) => l != layer));
-  }, []);
+  }, deps);
 }
 
-export function useMapFeatureSelect() {
+export function useMapFeatureSelect(deps: DependencyList = []) {
   const [selectedFeatures, setSelectedFeatures] = useState<FeatureLike[]>([]);
+  useEffect(() => {
+    setSelectedFeatures([]);
+  }, deps);
+
   function handleClick(e: MapBrowserEvent<MouseEvent>) {
-    setSelectedFeatures(map.getFeaturesAtPixel(e.pixel, {}));
+    setSelectedFeatures(
+      map.getFeaturesAtPixel(e.pixel, {
+        hitTolerance: 7,
+      })
+    );
   }
 
   useEffect(() => {
@@ -119,7 +128,7 @@ export function useMapFeatureSelect() {
 }
 
 export function useMapFit(target: SimpleGeometry, options: FitOptions) {
-  map.getView().fit(target, options);
+  useEffect(() => map.getView().fit(target, options), [target]);
 }
 
 export function useMapOverlay(

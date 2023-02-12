@@ -1,17 +1,21 @@
 import {
   SchoolFeatureCollectionDto,
   SchoolFeaturePropertiesDto,
-} from "../../../../../target/generated-sources/openapi-typescript";
-import { useMapFeatureSelect, useMapLayer, useMapOverlay } from "../map";
+} from "../../generated";
+import { useMapLayer } from "../map";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
 import * as React from "react";
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { PageHeader } from "../pageHeader";
 import { slugify } from "./slugify";
+import { useClickOnSchool } from "./useClickOnSchool";
+import { schoolCircleStyle } from "./style";
+
+const styleOffentlig = schoolCircleStyle([255, 0, 0]);
+const stylePrivat = schoolCircleStyle([128, 0, 255]);
 
 export function ListSchools({
   schools,
@@ -20,6 +24,12 @@ export function ListSchools({
 }) {
   useMapLayer(
     new VectorLayer({
+      style: (feature) => {
+        const school = feature.getProperties() as SchoolFeaturePropertiesDto;
+        return school.eierforhold === "Offentlig"
+          ? styleOffentlig
+          : stylePrivat;
+      },
       source: new VectorSource({
         features: schools.features.map(
           (school) =>
@@ -31,25 +41,7 @@ export function ListSchools({
       }),
     })
   );
-  const selectedFeatures = useMapFeatureSelect();
-  const selectedCoordinate = useMemo(
-    () =>
-      selectedFeatures.length > 0
-        ? (selectedFeatures[0].getGeometry() as Point).getCoordinates()
-        : undefined,
-    [selectedFeatures]
-  );
-  useMapOverlay(
-    selectedFeatures
-      .map((f) => f.getProperties() as SchoolFeaturePropertiesDto)
-      .map((s) => (
-        <div key={slugify(s)}>
-          <h3>{s.navn}</h3>
-          <Link to={`/schools/${slugify(s)}`}>Gå til »</Link>
-        </div>
-      )),
-    selectedCoordinate
-  );
+  useClickOnSchool();
 
   return (
     <>
