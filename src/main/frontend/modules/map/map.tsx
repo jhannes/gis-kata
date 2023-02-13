@@ -1,10 +1,8 @@
 import * as React from "react";
 import {
   DependencyList,
-  Dispatch,
   MutableRefObject,
   ReactNode,
-  SetStateAction,
   useContext,
   useEffect,
   useMemo,
@@ -22,13 +20,14 @@ import { SimpleGeometry } from "ol/geom";
 import { FitOptions } from "ol/View";
 import { MousePosition, OverviewMap, Zoom } from "ol/control";
 import { FeatureLike } from "ol/Feature";
+import { BaseLayerSelector } from "./baseLayerSelectControl";
+import { MapContext } from "./mapContext";
+import { layersDefinitions } from "./layersDefinitions";
 
 useGeographic();
 
-let baseLayer = new TileLayer({ source: new OSM() });
 const overlay = new Overlay({});
 const map = new Map({
-  layers: [baseLayer],
   overlays: [overlay],
   controls: [new Zoom(), new MousePosition({}), new OverviewMap()],
   view: new View({
@@ -37,20 +36,18 @@ const map = new Map({
   }),
 });
 
-const MapContext = React.createContext<{
-  setFeatureLayers: Dispatch<SetStateAction<Layer[]>>;
-  setOverlayPosition: Dispatch<SetStateAction<number[] | undefined>>;
-  overlayContent?: ReactNode | undefined;
-  setOverlayContent: Dispatch<SetStateAction<ReactNode | undefined>>;
-}>({
-  setFeatureLayers: () => {},
-  setOverlayPosition: () => {},
-  setOverlayContent: () => {},
-});
-
 export function MapContextProvider({ children }: { children: ReactNode }) {
   const [featureLayers, setFeatureLayers] = useState<Layer[]>([]);
-  const layers = useMemo(() => [baseLayer, ...featureLayers], [featureLayers]);
+  const [baseLayer, setBaseLayer] = useState<Layer>(
+    () =>
+      new TileLayer({
+        source: new OSM(),
+      })
+  );
+  const layers = useMemo(
+    () => [baseLayer, ...featureLayers],
+    [featureLayers, baseLayer]
+  );
   useEffect(() => {
     map.setLayers(layers);
   }, [layers]);
@@ -66,6 +63,7 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
   return (
     <MapContext.Provider
       value={{
+        setBaseLayer,
         setFeatureLayers,
         setOverlayPosition,
         setOverlayContent,
@@ -89,7 +87,9 @@ export function MapView() {
 
   return (
     <>
-      <div id="map" ref={mapRef}></div>
+      <div id="map" ref={mapRef} style={{ position: "relative" }}>
+        <BaseLayerSelector layerDefinitions={layersDefinitions} />
+      </div>
       <div id="overlay" ref={overlayRef}>
         {overlayContent}
       </div>

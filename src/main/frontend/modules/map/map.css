@@ -19,3 +19,10 @@
     border-left: 0.5em solid transparent;
     border-right: 0.5em solid transparent;
 }
+
+.map-layerselector {
+    left: 0.5em;
+    top: 4em;
+    z-index: 10;
+    position: absolute;
+}
