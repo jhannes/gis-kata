@@ -30,10 +30,6 @@ const overlay = new Overlay({});
 const map = new Map({
   overlays: [overlay],
   controls: [new Zoom(), new MousePosition({}), new OverviewMap()],
-  view: new View({
-    center: [10, 60],
-    zoom: 8,
-  }),
 });
 
 export function MapContextProvider({ children }: { children: ReactNode }) {
@@ -44,13 +40,26 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
         source: new OSM(),
       })
   );
+
+  const projection = useMemo(() => {
+    return baseLayer.getSource()?.getProjection() || undefined;
+  }, [baseLayer]);
+  const view = useMemo(
+    () =>
+      new View({
+        center: [10.5, 59.5],
+        zoom: 10,
+        projection,
+      }),
+    [projection]
+  );
+  useEffect(() => map.setView(view), [view]);
+
   const layers = useMemo(
     () => [baseLayer, ...featureLayers],
     [featureLayers, baseLayer]
   );
-  useEffect(() => {
-    map.setLayers(layers);
-  }, [layers]);
+  useEffect(() => map.setLayers(layers), [layers]);
 
   const [overlayPosition, setOverlayPosition] = useState<
     number[] | undefined
