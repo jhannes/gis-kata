@@ -50,11 +50,13 @@ export function ListSchools({
       </PageHeader>
       <h1>{schools.features.length} schools</h1>
       <ul>
-        {schools.features.map(({ properties: school }) => (
-          <li key={slugify(school)}>
-            <Link to={`/schools/${slugify(school)}`}>{school.navn}</Link>
-          </li>
-        ))}
+        {schools.features
+          .sort((a, b) => a.properties.navn.localeCompare(b.properties.navn))
+          .map(({ properties: school }) => (
+            <li key={slugify(school)}>
+              <Link to={`/schools/${slugify(school)}`}>{school.navn}</Link>
+            </li>
+          ))}
       </ul>
     </>
   );

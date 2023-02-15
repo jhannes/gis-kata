@@ -45,11 +45,14 @@ async function loadLayer({
 function LayerRadioButton({
   name,
   layer,
+  checked,
+  onChecked,
 }: {
   name: string;
+  checked: boolean;
+  onChecked(): void;
   layer?: LoadedLayer;
 }) {
-  const { setBaseLayer } = useContext(MapContext);
   if (!layer) {
     return (
       <label>
@@ -72,9 +75,8 @@ function LayerRadioButton({
       <input
         type="radio"
         name="baseLayer"
-        onChange={() => {
-          setBaseLayer(new TileLayer({ source: layer.source }));
-        }}
+        checked={checked}
+        onChange={onChecked}
       />{" "}
       {name}
     </label>
@@ -85,16 +87,25 @@ function BaseLayerRadioList({
   layerDefinitions,
   layers,
   onClose,
+  selectedLayer,
+  setSelectedLayer,
 }: {
   layerDefinitions: LayerDefinition[];
   layers: Record<string, LoadedLayer>;
+  selectedLayer?: string;
+  setSelectedLayer(layer: string): void;
   onClose: () => void;
 }) {
   return (
     <ModalWindow onClose={onClose}>
       {layerDefinitions.map((l) => (
         <div key={l.name}>
-          <LayerRadioButton name={l.name} layer={layers[l.name]} />
+          <LayerRadioButton
+            name={l.name}
+            layer={layers[l.name]}
+            onChecked={() => setSelectedLayer(l.name)}
+            checked={l.name === selectedLayer}
+          />
         </div>
       ))}
     </ModalWindow>
@@ -106,9 +117,20 @@ export function BaseLayerSelector({
 }: {
   layerDefinitions: LayerDefinition[];
 }) {
+  const { setBaseLayer } = useContext(MapContext);
   const [layers, setLayers] = useState<Record<string, LoadedLayer>>({
     "Open Street Map": { source: new OSM() },
   });
+  const [selectedLayer, setSelectedLayer] = useState<string>(
+    () => sessionStorage.getItem("baseLayer") || "Open Street Map"
+  );
+  useEffect(() => {
+    sessionStorage.setItem("baseLayer", selectedLayer);
+    const layer = (layers[selectedLayer] || { source: new OSM() }) as {
+      source: TileSource;
+    };
+    setBaseLayer(new TileLayer({ source: layer.source }));
+  }, [selectedLayer, layers]);
   useEffect(() => {
     for (const def of layerDefinitions) {
       if ("url" in def) {
@@ -134,6 +156,8 @@ export function BaseLayerSelector({
           layerDefinitions={layerDefinitions}
           layers={layers}
           onClose={() => setOpen(false)}
+          setSelectedLayer={setSelectedLayer}
+          selectedLayer={selectedLayer}
         />
       )}
     </div>

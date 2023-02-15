@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Map, MapBrowserEvent, Overlay, View } from "ol";
+import { Map, MapBrowserEvent, MapEvent, Overlay, View } from "ol";
 import { useGeographic } from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
@@ -26,12 +26,6 @@ import { layersDefinitions } from "./layersDefinitions";
 
 useGeographic();
 
-const overlay = new Overlay({});
-const map = new Map({
-  overlays: [overlay],
-  controls: [new Zoom(), new MousePosition({}), new OverviewMap()],
-});
-
 export function MapContextProvider({ children }: { children: ReactNode }) {
   const [featureLayers, setFeatureLayers] = useState<Layer[]>([]);
   const [baseLayer, setBaseLayer] = useState<Layer>(
@@ -41,17 +35,23 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
       })
   );
 
+  const overlay = useMemo(() => new Overlay({}), []);
+  const map = useMemo(
+    () =>
+      new Map({
+        overlays: [overlay],
+        controls: [new Zoom(), new MousePosition({}), new OverviewMap()],
+      }),
+    []
+  );
+  const viewPort = useMapViewPort(map, { center: [10.5, 59.5], zoom: 10 });
+
   const projection = useMemo(() => {
     return baseLayer.getSource()?.getProjection() || undefined;
   }, [baseLayer]);
   const view = useMemo(
-    () =>
-      new View({
-        center: [10.5, 59.5],
-        zoom: 10,
-        projection,
-      }),
-    [projection]
+    () => new View({ ...viewPort, projection }),
+    [projection, viewPort]
   );
   useEffect(() => map.setView(view), [view]);
 
@@ -72,6 +72,8 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
   return (
     <MapContext.Provider
       value={{
+        map,
+        overlay,
         setBaseLayer,
         setFeatureLayers,
         setOverlayPosition,
@@ -85,13 +87,13 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
 }
 
 export function MapView() {
-  const { overlayContent } = useContext(MapContext);
+  const { overlayContent, map, overlay } = useContext(MapContext);
 
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
   const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
   useEffect(() => {
-    map.setTarget(mapRef.current);
-    overlay.setElement(overlayRef.current);
+    map!.setTarget(mapRef.current);
+    overlay!.setElement(overlayRef.current);
   }, []);
 
   return (
@@ -116,28 +118,30 @@ export function useMapLayer(layer: Layer, deps: DependencyList = []) {
 
 export function useMapFeatureSelect(deps: DependencyList = []) {
   const [selectedFeatures, setSelectedFeatures] = useState<FeatureLike[]>([]);
+  const { map } = useContext(MapContext);
   useEffect(() => {
     setSelectedFeatures([]);
   }, deps);
 
   function handleClick(e: MapBrowserEvent<MouseEvent>) {
     setSelectedFeatures(
-      map.getFeaturesAtPixel(e.pixel, {
+      map!.getFeaturesAtPixel(e.pixel, {
         hitTolerance: 7,
       })
     );
   }
 
   useEffect(() => {
-    map.on("click", handleClick);
-    return () => map.un("click", handleClick);
+    map!.on("click", handleClick);
+    return () => map!.un("click", handleClick);
   }, []);
 
   return selectedFeatures;
 }
 
 export function useMapFit(target: SimpleGeometry, options: FitOptions) {
-  useEffect(() => map.getView().fit(target, options), [target]);
+  const { map } = useContext(MapContext);
+  useEffect(() => map!.getView().fit(target, options), [target]);
 }
 
 export function useMapOverlay(
@@ -153,4 +157,28 @@ export function useMapOverlay(
       setOverlayPosition(undefined);
     };
   }, [position]);
+}
+
+function useMapViewPort(
+  map: Map,
+  defaultViewport: { center: number[]; zoom: number }
+) {
+  function handleMoveend(event: MapEvent) {
+    const view = event.map.getView();
+    sessionStorage.setItem(
+      "viewport",
+      JSON.stringify({ center: view.getCenter(), zoom: view.getZoom() })
+    );
+  }
+
+  useEffect(() => {
+    map.on("moveend", handleMoveend);
+    return () => map.un("moveend", handleMoveend);
+  }, [map]);
+
+  const viewport = useMemo(() => {
+    const savedViewport = sessionStorage.getItem("viewport");
+    return savedViewport ? JSON.parse(savedViewport) : defaultViewport;
+  }, []);
+  return viewport;
 }

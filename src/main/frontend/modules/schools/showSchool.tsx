@@ -21,7 +21,7 @@ function schoolToFeature(school: SchoolFeatureDto) {
     ...school.properties,
     geometry: new Point(school.geometry.coordinates as number[]),
   });
-  feature.setId(slugify(school.properties as SchoolFeaturePropertiesDto));
+  feature.setId(slugify(school.properties));
   return feature;
 }
 
@@ -70,7 +70,7 @@ export function ShowSchool({
   useClickOnSchool([id]);
 
   useMapFit(schoolPoint, {
-    maxZoom: 10,
+    maxZoom: 12,
     duration: 400,
   });
   return (
