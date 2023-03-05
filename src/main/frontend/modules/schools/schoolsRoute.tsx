@@ -1,24 +1,19 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { DefaultApi, SchoolFeatureCollectionDto } from "../../generated";
+import { DefaultApi } from "../../generated";
 import { Route, Routes } from "react-router-dom";
 import { ShowSchool } from "./showSchool";
 import { ListSchools } from "./listSchools";
+import { useLoading } from "../hooks/useLoading";
+import { LoadingScreen } from "../loader/loadingScreen";
 
 export function SchoolsRoute() {
-  const [loading, setLoading] = useState(true);
-  const [schools, setSchools] = useState<SchoolFeatureCollectionDto>();
-  useEffect(() => {
-    (async () => {
-      const defaultApi = new DefaultApi();
-      setLoading(true);
-      setSchools(await defaultApi.listSchoolFeatures());
-      setLoading(false);
-    })();
-  }, []);
+  const defaultApi = new DefaultApi();
+  const { loading, data: schools } = useLoading(
+    async () => await defaultApi.listSchoolFeatures()
+  );
 
   if (loading || !schools) {
-    return <div>"Loading ..."</div>;
+    return <LoadingScreen />;
   }
 
   return (

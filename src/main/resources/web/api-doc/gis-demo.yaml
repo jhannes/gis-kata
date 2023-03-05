@@ -4,6 +4,16 @@ info:
   description: A demo of a GIS application
   version: 0.1.0
 paths:
+  /geojson/municipalities.geojson:
+    get:
+      operationId: listMunicipalityFeatures
+      responses:
+        200:
+          description: Municipalities of Norway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityFeatureCollection'
   /geojson/schools.geojson:
     get:
       operationId: listSchoolFeatures
@@ -16,6 +26,35 @@ paths:
                 $ref: '#/components/schemas/SchoolFeatureCollection'
 components:
   schemas:
+    MunicipalityFeatureCollection:
+      allOf:
+        - $ref: "./schema/geojson.yaml#/FeatureCollection"
+        - properties:
+            features:
+              type: array
+              items:
+                $ref: "#/components/schemas/MunicipalityFeature"
+          required:
+            - features
+    MunicipalityFeature:
+      allOf:
+        - $ref: "./schema/geojson.yaml#/Feature"
+        - properties:
+            geometry:
+              $ref: "./schema/geojson.yaml#/Polygon"
+            properties:
+              $ref: "#/components/schemas/MunicipalityFeatureProperties"
+          required:
+            - properties
+    MunicipalityFeatureProperties:
+      properties:
+        kommunenummer:
+          type: string
+        navn:
+          type: string
+      required:
+        - kommunenummer
+        - navn
     SchoolFeatureCollection:
       allOf:
         - $ref: "./schema/geojson.yaml#/FeatureCollection"

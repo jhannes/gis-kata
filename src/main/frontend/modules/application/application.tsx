@@ -9,6 +9,7 @@ import {
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
 import { SchoolsRoute } from "../schools";
+import { MunicipalitiesRoute } from "../municipalities";
 
 export function Application() {
   return (
@@ -16,7 +17,7 @@ export function Application() {
       <MapContextProvider>
         <BrowserRouter>
           <ShowPageHeader>
-            <h1>Hello My Application</h1>
+            <h1>Schools in Norway</h1>
           </ShowPageHeader>
           <main>
             <aside id="menu-sidebar">
@@ -26,6 +27,9 @@ export function Application() {
                 </li>
                 <li>
                   <Link to={"/schools"}>Schools</Link>
+                </li>
+                <li>
+                  <Link to={"/municipalities"}>Municipalities</Link>
                 </li>
                 <div className="spacer"></div>
                 <li>
@@ -52,6 +56,8 @@ function ContentSidebar() {
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
         <Route path={"/schools/*"} element={<SchoolsRoute />} />
+        <Route path={"/municipalities/*"} element={<MunicipalitiesRoute />} />
+        <Route path={"/*"} element={<h1>Not found</h1>} />
       </Routes>
     </aside>
   );

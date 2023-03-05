@@ -8,7 +8,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import java.io.IOException;
 
 public class GisServer {
-    private final Server server = new Server(80);
+    private final Server server = new Server(8080);
 
     private void start() throws Exception {
         server.setRequestLog(new CustomRequestLog());
