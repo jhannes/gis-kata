@@ -41,22 +41,13 @@ Feature:
 
 Geometry:
   oneOf:
-    - $ref: '#/Point'
     - $ref: '#/LineString'
+    - $ref: '#/MultiPolygon'
+    - $ref: '#/Point'
     - $ref: '#/Polygon'
   discriminator:
     propertyName: type
 
-Point:
-  properties:
-    type:
-      type: string
-      enum: [ Point ]
-    coordinates:
-      $ref: '#/Point3D'
-  required:
-    - type
-    - coordinates
 
 LineString:
   properties:
@@ -71,20 +62,45 @@ LineString:
     - type
     - coordinates
 
-Polygon:
+MultiPolygon:
   properties:
     type:
       type: string
-      enum: [ Polygon ]
+      enum: [ MultiPolygon ]
     coordinates:
       type: array
       items:
-        type: array
-        items:
-          $ref: '#/Point3D'
+        $ref: '#/PolygonCoordinates'
   required:
     - type
     - coordinates
+
+Point:
+  properties:
+    type:
+      type: string
+      enum: [ Point ]
+    coordinates:
+      $ref: '#/Point3D'
+  required:
+    - type
+    - coordinates
+
+LinearRingCoordinates:
+  type: array
+  minItems: 4
+  items:
+    $ref: "#/PointCoordinates"
+
+PointCoordinates:
+  type: array
+  externalDocs:
+    url: https://tools.ietf.org/html/rfc7946
+  minItems: 2
+  items:
+    type: number
+    format: double
+    example: [ 10, 60 ]
 
 Point3D:
   type: array
@@ -97,6 +113,22 @@ Point3D:
     type: number
     format: double
     example: [ 10, 60 ]
+
+PolygonCoordinates:
+  type: array
+  items:
+    $ref: "#/LinearRingCoordinates"
+
+Polygon:
+  properties:
+    type:
+      type: string
+      enum: [ Polygon ]
+    coordinates:
+      $ref: '#/PolygonCoordinates'
+  required:
+    - type
+    - coordinates
 
 GeometryCollection:
   type: object
