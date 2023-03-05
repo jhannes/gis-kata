@@ -5,21 +5,21 @@ import {
 } from "../../generated";
 import { Link, useParams } from "react-router-dom";
 import { slugify } from "./slugify";
-import { Point } from "ol/geom";
 import { useMapFit, useMapLayer } from "../map";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import * as React from "react";
+import { useMemo } from "react";
 import { FeatureLike } from "ol/Feature";
 import { useClickOnSchool } from "./useClickOnSchool";
 import { schoolCircleStyle, textStyle } from "./style";
-import { useMemo } from "react";
+import { geometryFromDto } from "../map/createFeatureSource";
 
 function schoolToFeature(school: SchoolFeatureDto) {
   const feature = new Feature({
     ...school.properties,
-    geometry: new Point(school.geometry.coordinates as number[]),
+    geometry: geometryFromDto(school.geometry),
   });
   feature.setId(slugify(school.properties));
   return feature;
@@ -39,10 +39,7 @@ export function ShowSchool({
   const school = schools.features.find(
     (school) => slugify(school.properties) === id
   )!;
-  const schoolPoint = useMemo(
-    () => new Point(school.geometry.coordinates as number[]),
-    [school]
-  );
+  const schoolPoint = useMemo(() => geometryFromDto(school.geometry), [school]);
 
   function style(feature: FeatureLike) {
     const school = feature.getProperties() as SchoolFeaturePropertiesDto;
