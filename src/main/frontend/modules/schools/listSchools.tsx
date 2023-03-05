@@ -11,6 +11,7 @@ import { slugify } from "./slugify";
 import { useClickOnSchool } from "./useClickOnSchool";
 import { schoolCircleStyle } from "./style";
 import { createFeatureSource } from "../map/createFeatureSource";
+import { compareByProp } from "../utils/compareByProp";
 
 const styleOffentlig = schoolCircleStyle([255, 0, 0]);
 const stylePrivat = schoolCircleStyle([128, 0, 255]);
@@ -41,7 +42,7 @@ export function ListSchools({
       <h1>{schools.features.length} schools</h1>
       <ul>
         {schools.features
-          .sort((a, b) => a.properties.navn.localeCompare(b.properties.navn))
+          .sort(compareByProp((school) => school.properties.navn))
           .map(({ properties: school }) => (
             <li key={slugify(school)}>
               <Link to={`/schools/${slugify(school)}`}>{school.navn}</Link>

@@ -10,6 +10,9 @@ import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
 import { SchoolsRoute } from "../schools";
 import { MunicipalitiesRoute } from "../municipalities";
+import { DefaultApi } from "../../../../../target/generated-sources/openapi-typescript";
+import { useLoading } from "../hooks/useLoading";
+import { LoadingScreen } from "../loader/loadingScreen";
 
 export function Application() {
   return (
@@ -50,13 +53,28 @@ export function Application() {
 }
 
 function ContentSidebar() {
+  const defaultApi = new DefaultApi();
+  const { loading, data: schools } = useLoading(
+    async () => await defaultApi.listSchoolFeatures()
+  );
+
+  if (loading || !schools) {
+    return <LoadingScreen />;
+  }
+
   return (
     <aside id="content-sidebar">
       <Routes>
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
-        <Route path={"/schools/*"} element={<SchoolsRoute />} />
-        <Route path={"/municipalities/*"} element={<MunicipalitiesRoute />} />
+        <Route
+          path={"/schools/*"}
+          element={<SchoolsRoute schools={schools} />}
+        />
+        <Route
+          path={"/municipalities/*"}
+          element={<MunicipalitiesRoute schools={schools} />}
+        />
         <Route path={"/*"} element={<h1>Not found</h1>} />
       </Routes>
     </aside>

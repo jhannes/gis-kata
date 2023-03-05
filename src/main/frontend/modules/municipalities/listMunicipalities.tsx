@@ -11,6 +11,7 @@ import { createFeatureSource } from "../map/createFeatureSource";
 import { Fill, Stroke, Style, Text } from "ol/style";
 import { FeatureLike } from "ol/Feature";
 import { Point } from "ol/geom";
+import { compareByProp } from "../utils/compareByProp";
 
 function municipalityStyle(feature: FeatureLike, resolution: number): Style[] {
   const props = feature.getProperties() as MunicipalityFeaturePropertiesDto;
@@ -61,7 +62,7 @@ export function ListMunicipalities({
       <h1>{municipalities.features.length} municipalities</h1>
       <ul>
         {municipalities.features
-          .sort((a, b) => a.properties.navn.localeCompare(b.properties.navn))
+          .sort(compareByProp((m) => m.properties.navn))
           .map(({ properties: { kommunenummer, navn } }) => (
             <li key={kommunenummer}>
               <Link to={`/municipalities/${kommunenummer}`}>{navn}</Link>

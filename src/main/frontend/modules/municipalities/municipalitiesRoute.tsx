@@ -1,12 +1,16 @@
 import React from "react";
-import { DefaultApi } from "../../generated";
+import { DefaultApi, SchoolFeatureCollectionDto } from "../../generated";
 import { useLoading } from "../hooks/useLoading";
 import { LoadingScreen } from "../loader/loadingScreen";
 import { Route, Routes } from "react-router-dom";
 import { ListMunicipalities } from "./listMunicipalities";
 import { ShowMunicipality } from "./showMunicipality";
 
-export function MunicipalitiesRoute() {
+export function MunicipalitiesRoute({
+  schools,
+}: {
+  schools: SchoolFeatureCollectionDto;
+}) {
   const defaultApi = new DefaultApi();
   const { loading, data: municipalities } = useLoading(
     async () => await defaultApi.listMunicipalityFeatures()
@@ -24,7 +28,9 @@ export function MunicipalitiesRoute() {
       />
       <Route
         path={"/:id"}
-        element={<ShowMunicipality municipalities={municipalities} />}
+        element={
+          <ShowMunicipality municipalities={municipalities} schools={schools} />
+        }
       />
       <Route path={"/*"} element={<h1>Not found</h1>} />
     </Routes>
