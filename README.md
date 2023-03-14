@@ -18,7 +18,7 @@ Build the deployable version using `npm run rebuild`
 * [x] Create a basic React application
 * [x] Create proper build steps
 * [x] Deploy using github pages
-* [ ] Basic application layout
+* [x] Basic application layout
 * [ ] Router for content sidebar
 * [ ] Show map with Open Street Map
 * [ ] Add vector layer with polygons, styling and fit

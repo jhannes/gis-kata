@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+#root {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+#root main {
+  display: flex;
+}
+
+#root main aside {
+  background-color: orange;
+  padding: 0.5em;
+  overflow-y: auto;
+}
+#menu-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#menu-sidebar .spacer {
+  flex: 1;
+}
+
+#map {
+  flex: 1;
+  background-color: lightblue;
+}
