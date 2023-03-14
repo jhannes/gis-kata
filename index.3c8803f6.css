@@ -1,0 +1,2 @@
+body{margin:0}#root{height:100vh;grid-template-rows:auto minmax(0,1fr) auto;display:grid}#root main{display:flex}#root main aside{background-color:orange;padding:.5em;overflow-y:auto}#menu-sidebar nav{height:100%;flex-direction:column;display:flex}#menu-sidebar .spacer{flex:1}#map{background-color:#add8e6;flex:1}
+/*# sourceMappingURL=index.3c8803f6.css.map */
