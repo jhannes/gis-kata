@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel serve src/index.html",
+    "start": "parcel serve src/index.html --public-url /gis-kata/",
     "rebuild": "npm run clean && npm run build",
     "clean": "rimraf dist/ .parcel-cache/",
     "build": "npm run build:prettier && npm run build:typescript && npm run build:parcel",
     "build:prettier": "prettier --check src/",
     "prettier": "prettier --write src/",
     "build:typescript": "tsc --noEmit",
-    "build:parcel": "parcel build src/index.html"
+    "build:parcel": "parcel build src/index.html --public-url /gis-kata/"
   },
   "repository": {
     "type": "git",
