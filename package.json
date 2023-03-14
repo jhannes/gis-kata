@@ -1,27 +1,37 @@
 {
   "name": "gis-kata",
   "version": "1.0.0",
-  "description": "[Deployed version](https://jhannes.github.io/gis-kata/)",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel serve src/index.html"
+    "start": "parcel serve src/index.html",
+    "rebuild": "npm run clean && npm run build",
+    "clean": "rimraf dist/ .parcel-cache/",
+    "build": "npm run build:prettier && npm run build:typescript && npm run build:parcel",
+    "build:prettier": "prettier --check src/",
+    "prettier": "prettier --write src/",
+    "build:typescript": "tsc --noEmit",
+    "build:parcel": "parcel build src/index.html"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jhannes/gis-kata.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Johannes Brodwall <johannes@brodwall.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jhannes/gis-kata/issues"
   },
   "homepage": "https://github.com/jhannes/gis-kata#readme",
   "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "parcel": "^2.8.3",
+    "prettier": "^2.8.4",
     "process": "^0.11.10",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rimraf": "^4.4.0",
+    "typescript": "^4.9.5"
   }
 }

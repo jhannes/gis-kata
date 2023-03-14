@@ -16,7 +16,7 @@ Build the deployable version using `npm run rebuild`
 ## Path
 
 * [x] Create a basic React application
-* [ ] Create proper build steps
+* [x] Create proper build steps
 * [ ] Deploy using github pages
 * [ ] Basic application layout
 * [ ] Router for content sidebar
