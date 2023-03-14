@@ -1,4 +1,4 @@
-body {
+* {
   margin: 0;
 }
 
@@ -13,6 +13,8 @@ body {
 }
 
 #root main aside {
+  min-width: 15em;
+  max-width: 20em;
   background-color: orange;
   padding: 0.5em;
   overflow-y: auto;

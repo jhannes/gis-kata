@@ -5,3 +5,4 @@ import { Application } from "./modules/application";
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(<Application />);
+export { PageHeader } from "./modules/pageHeader/pageHeader";

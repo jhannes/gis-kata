@@ -19,7 +19,7 @@ Build the deployable version using `npm run rebuild`
 * [x] Create proper build steps
 * [x] Deploy using github pages
 * [x] Basic application layout
-* [ ] Router for content sidebar
+* [x] React Router with page header
 * [ ] Show map with Open Street Map
 * [ ] Add vector layer with polygons, styling and fit
   * [ ] Set page header using context
