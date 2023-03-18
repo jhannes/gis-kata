@@ -5,6 +5,3 @@ import { Application } from "./modules/application";
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(<Application />);
-export { PageHeader } from "./modules/pageHeader/pageHeader";
-export { MapView } from "./modules/map/mapView";
-export { AreasSidebar } from "./modules/areasSidebar/areasSidebar";

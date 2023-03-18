@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
-import { AreasSidebar } from "../areasSidebar";
+import { AreasSidebar } from "../areas";
 
 export function Application() {
   return (
