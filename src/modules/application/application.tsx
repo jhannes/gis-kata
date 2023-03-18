@@ -26,7 +26,9 @@ export function Application() {
             <MapView />
             <ContentSidebar />
           </main>
-          <footer>Application by Johannes</footer>
+          <footer>
+            [<a href="http://github.com/jhannes/gis-kata"> source code </a>]
+          </footer>
         </HashRouter>
       </MapContextProvider>
     </PageHeaderContext>
