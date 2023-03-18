@@ -6,3 +6,4 @@ const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(<Application />);
 export { PageHeader } from "./modules/pageHeader/pageHeader";
+export { MapView } from "./modules/map/mapView";

@@ -1,6 +1,7 @@
 import React from "react";
 import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
+import { MapView } from "../map";
 
 export function Application() {
   return (
@@ -18,7 +19,7 @@ export function Application() {
               <li>Help</li>
             </nav>
           </aside>
-          <div id="map">I'm a map</div>
+          <MapView />
           <ContentSidebar />
         </main>
         <footer>Application by Johannes</footer>
