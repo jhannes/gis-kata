@@ -2,6 +2,9 @@ import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { Map, View } from "ol";
 import { OSM } from "ol/source";
 import TileLayer from "ol/layer/Tile";
+import { useGeographic } from "ol/proj";
+
+useGeographic();
 
 export function MapView() {
   const map = useMemo(
