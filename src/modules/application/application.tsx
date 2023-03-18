@@ -1,32 +1,34 @@
 import React from "react";
 import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
-import { MapView } from "../map";
+import { MapContextProvider, MapView } from "../map";
 import { AreasSidebar } from "../areasSidebar";
 
 export function Application() {
   return (
     <PageHeaderContext>
-      <HashRouter>
-        <ShowPageHeader>
-          <h1>Hello Application</h1>
-        </ShowPageHeader>
-        <main>
-          <aside id="menu-sidebar">
-            <nav>
-              <li>Home</li>
-              <li>
-                <Link to={"/areas"}>Areas</Link>
-              </li>
-              <div className="spacer"></div>
-              <li>Help</li>
-            </nav>
-          </aside>
-          <MapView />
-          <ContentSidebar />
-        </main>
-        <footer>Application by Johannes</footer>
-      </HashRouter>
+      <MapContextProvider>
+        <HashRouter>
+          <ShowPageHeader>
+            <h1>Hello Application</h1>
+          </ShowPageHeader>
+          <main>
+            <aside id="menu-sidebar">
+              <nav>
+                <li>Home</li>
+                <li>
+                  <Link to={"/areas"}>Areas</Link>
+                </li>
+                <div className="spacer"></div>
+                <li>Help</li>
+              </nav>
+            </aside>
+            <MapView />
+            <ContentSidebar />
+          </main>
+          <footer>Application by Johannes</footer>
+        </HashRouter>
+      </MapContextProvider>
     </PageHeaderContext>
   );
 }
