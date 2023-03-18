@@ -1,24 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import VectorLayer from "ol/layer/Vector";
-import { Layer } from "ol/layer";
-
-const MapContext = React.createContext({
-  setMapLayers: (setter: (old: Layer[]) => Layer[]) => {},
-});
-
-function useMapContext() {
-  return useContext(MapContext);
-}
-
-function useMapLayer(layer: Layer) {
-  const { setMapLayers } = useMapContext();
-  useEffect(() => {
-    setMapLayers((old) => [...old, layer]);
-    return () => setMapLayers((old) => old.filter((l) => l !== layer));
-  }, []);
-}
+import { useMapLayer } from "../map/mapHooks";
+import { PageHeader } from "../pageHeader";
 
 export function AreasSidebar() {
   useMapLayer(
@@ -30,5 +15,12 @@ export function AreasSidebar() {
     })
   );
 
-  return <h2>Areas</h2>;
+  return (
+    <>
+      <PageHeader>
+        <h1>Areas</h1>
+      </PageHeader>
+      <h2>Areas</h2>
+    </>
+  );
 }
