@@ -20,12 +20,15 @@ Build the deployable version using `npm run rebuild`
 * [x] Deploy using github pages
 * [x] Basic application layout
 * [x] React Router with page header
-* [ ] Show map with Open Street Map
-* [ ] Add vector layer with polygons, styling and fit
-  * [ ] Set page header using context
-* [ ] Add vector layer with points
+  * [x] Set page header using context
+* [x] Show map with Open Street Map
+* [x] Add vector layer with polygons
+* [x] Add vector layer with points
+* [ ] Simple styling
+* [ ] Selecting polygon to fit (create layer from objects)
 * [ ] Clicking points to show overlays and fitting to content
-* [ ] Styling points
+* [ ] Advanced styling
 * [ ] Adding multiple base layer options
+* [ ] Remember location on refresh
 * [ ] Draw features on the map
 
