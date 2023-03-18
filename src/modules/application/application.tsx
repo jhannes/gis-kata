@@ -10,7 +10,7 @@ export function Application() {
       <MapContextProvider>
         <HashRouter>
           <ShowPageHeader>
-            <h1>Hello Application</h1>
+            <h1>Map demo application</h1>
           </ShowPageHeader>
           <main>
             <aside id="menu-sidebar">
