@@ -26,8 +26,8 @@ Build the deployable version using `npm run rebuild`
 * [x] Add vector layer with points
 * [x] Simple styling
 * [x] Selecting polygon to fit (create layer from objects)
+* [x] Advanced styling
 * [ ] Clicking points to show overlays and fitting to content
-* [ ] Advanced styling
 * [ ] Adding multiple base layer options
 * [ ] Remember location on refresh
 * [ ] Draw features on the map
