@@ -1,17 +1,14 @@
 import React, { useMemo } from "react";
 import VectorLayer from "ol/layer/Vector";
-import { useMapLayer } from "../map/mapHooks";
-import { MultiPolygonDto, useFeatureCollection } from "../geo";
-import { createFeatureSource } from "../map";
-import { MunicipalityPropertiesDto } from "./areas";
+import { createFeatureSource, useMapLayer } from "../map";
+import { useFeatureCollection } from "../geo";
+import { AreaFeatureDto } from "./areas";
 import { AreasSidebar } from "./areasSidebar";
 import { Route, Routes } from "react-router-dom";
 import { SelectedAreaSidebar } from "./selectedAreaSidebar";
 
 function useAreaFeatureCollection() {
-  return useFeatureCollection<MultiPolygonDto, MunicipalityPropertiesDto>(
-    "/gis-kata/geojson/areas.json"
-  );
+  return useFeatureCollection<AreaFeatureDto>("/gis-kata/geojson/areas.json");
 }
 
 export function AreasRoutes() {

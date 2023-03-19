@@ -1,13 +1,10 @@
-import { FeatureCollectionDto, GeometryDto } from "./geo";
+import { FeatureCollectionDto, FeatureDto } from "./geo";
 import { useEffect, useState } from "react";
 
-export function useFeatureCollection<
-  GEO extends GeometryDto = GeometryDto,
-  PROP = unknown
->(url: any) {
+export function useFeatureCollection<FEATURE extends FeatureDto>(url: any) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(undefined);
-  const [data, setData] = useState<FeatureCollectionDto<GEO, PROP>>();
+  const [data, setData] = useState<FeatureCollectionDto<FEATURE>>();
 
   useEffect(() => {
     setData(undefined);

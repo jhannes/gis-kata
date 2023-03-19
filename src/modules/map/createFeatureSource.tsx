@@ -1,10 +1,10 @@
-import { FeatureCollectionDto, MultiPolygonDto } from "../geo";
+import { FeatureCollectionDto, FeatureDto, MultiPolygonDto } from "../geo";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import { MultiPolygon } from "ol/geom";
 
-export function createFeatureSource<PROPS>(
-  featureCollection?: FeatureCollectionDto<MultiPolygonDto, PROPS>
+export function createFeatureSource(
+  featureCollection?: FeatureCollectionDto<FeatureDto<MultiPolygonDto>>
 ) {
   if (!featureCollection) {
     return new VectorSource();
