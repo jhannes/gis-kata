@@ -2,10 +2,15 @@ import { AreaFeatureCollectionDto, AreaFeatureDto } from "./areas";
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { createFeature, useMapFeatureDtoLayer, useMapFit } from "../map/";
-import { Fill, Stroke, Style, Text } from "ol/style";
+import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 import { FeatureLike } from "ol/Feature";
-import { SchoolFeatureCollectionDto, slugify } from "../schools";
+import {
+  SchoolFeatureCollectionDto,
+  SchoolPropertiesDto,
+  slugify,
+} from "../schools";
 import { sortBy } from "../localization/sortBy";
+import { PageHeader } from "../pageHeader";
 
 function SelectedAreaSidebarView({
   areas,
@@ -17,6 +22,10 @@ function SelectedAreaSidebarView({
   schools: SchoolFeatureCollectionDto;
 }) {
   const kommunenummer = area.properties.kommunenummer.toString();
+  function schoolInArea(s: SchoolPropertiesDto) {
+    return parseInt(s.kommunenummer) === area.properties.kommunenummer;
+  }
+
   function style(f: FeatureLike) {
     return new Style({
       stroke: new Stroke({
@@ -42,16 +51,34 @@ function SelectedAreaSidebarView({
     padding: [50, 50, 50, 50],
     duration: 300,
   });
-  useMapFeatureDtoLayer(schools);
+  useMapFeatureDtoLayer(schools, {
+    style: (f) => {
+      const opacity = schoolInArea(f.getProperties() as SchoolPropertiesDto)
+        ? 1
+        : 0.4;
+      return new Style({
+        image: new Circle({
+          radius: 5,
+          stroke: new Stroke({ color: "black" }),
+          fill:
+            f.getProperties().eierforhold === "Offentlig"
+              ? new Fill({ color: [0, 0, 255, opacity] })
+              : new Fill({ color: [128, 0, 128, opacity] }),
+        }),
+      });
+    },
+  });
 
   return (
     <>
+      <PageHeader>
+        <h2>{area.properties.navn}</h2>
+      </PageHeader>
       <Link to={".."}>..</Link>
-      <h2>{area.properties.navn}</h2>
       <ul>
         {schools.features
           .map((f) => f.properties)
-          .filter((s) => parseInt(s.kommunenummer) === parseInt(kommunenummer))
+          .filter(schoolInArea)
           .sort(sortBy((s) => s.navn))
           .map((s) => (
             <li key={slugify(s)}>
