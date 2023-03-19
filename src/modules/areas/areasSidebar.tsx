@@ -1,57 +1,29 @@
-import React, { useEffect, useMemo, useState } from "react";
-import VectorSource from "ol/source/Vector";
+import React, { useMemo } from "react";
 import VectorLayer from "ol/layer/Vector";
 import { useMapLayer } from "../map/mapHooks";
 import { PageHeader } from "../pageHeader";
 import { sortBy } from "../localization/sortBy";
-import { FeatureCollectionDto, GeometryDto, MultiPolygonDto } from "../geo/geo";
+import { MultiPolygonDto, useFeatureCollection } from "../geo";
 import { Link } from "react-router-dom";
-import { Feature } from "ol";
-import { MultiPolygon } from "ol/geom";
+import { createFeatureSource } from "../map";
 
 interface MunicipalityPropertiesDto {
   navn: string;
   kommunenummer: string;
 }
 
-function useFeatureCollection<
-  GEO extends GeometryDto = GeometryDto,
-  PROP = unknown
->() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(undefined);
-  const [data, setData] = useState<FeatureCollectionDto<GEO, PROP>>();
-
-  useEffect(() => {
-    setData(undefined);
-    setLoading(true);
-    fetch("/gis-kata/geojson/areas.json")
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res);
-        setLoading(false);
-      })
-      .catch((error) => setError(error));
-  }, []);
-
-  return { loading, error, data };
+function useAreFeatureCollection() {
+  return useFeatureCollection<MultiPolygonDto, MunicipalityPropertiesDto>(
+    "/gis-kata/geojson/areas.json"
+  );
 }
 
 export function AreasSidebar() {
-  const areaFeatureCollection = useFeatureCollection<
-    MultiPolygonDto,
-    MunicipalityPropertiesDto
-  >();
+  const areaFeatureCollection = useAreFeatureCollection();
   const areaLayer = useMemo(() => {
-    return areaFeatureCollection.data
-      ? new VectorLayer({
-          source: new VectorSource({
-            features: areaFeatureCollection.data.features.map(
-              (f) => new Feature(new MultiPolygon(f.geometry.coordinates))
-            ),
-          }),
-        })
-      : new VectorLayer();
+    return new VectorLayer({
+      source: createFeatureSource(areaFeatureCollection.data),
+    });
   }, [areaFeatureCollection.data]);
 
   useMapLayer(areaLayer);
