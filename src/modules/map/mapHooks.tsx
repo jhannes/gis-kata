@@ -6,7 +6,8 @@ import { FitOptions } from "ol/View";
 import { MultiPolygon, Point } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import { createFeatureSource } from "./createFeatureSource";
-import { Style } from "ol/style";
+import { StyleLike } from "ol/style/Style";
+import { Feature } from "ol";
 
 export function useMapLayer(layer: Layer) {
   const { setLayers } = useMapContext();
@@ -30,14 +31,17 @@ export function useMapFit(geometry: MultiPolygonDto, options: FitOptions) {
   }, [geometry, options]);
 }
 
-export function useMapFeatureDtoLayer(
-  features: FeatureCollectionDto<FeatureDto<MultiPolygonDto>>,
-  options: { style?: Style } = {}
+export function useMapFeatureDtoLayer<
+  FEATURE extends FeatureDto<MultiPolygonDto>
+>(
+  features: FeatureCollectionDto<FEATURE>,
+  options: { style?: StyleLike } = {},
+  fn?: (feature: FEATURE) => Feature
 ) {
   const layer = useMemo(() => {
     return new VectorLayer({
       ...options,
-      source: createFeatureSource(features),
+      source: createFeatureSource(features, fn),
     });
   }, [features]);
   useMapLayer(layer);

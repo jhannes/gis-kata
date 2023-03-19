@@ -2,7 +2,7 @@ import { FeatureCollectionDto, FeatureDto, MultiPolygonDto } from "../geo";
 
 export interface MunicipalityPropertiesDto {
   navn: string;
-  kommunenummer: string;
+  kommunenummer: number;
 }
 
 export type AreaFeatureDto = FeatureDto<

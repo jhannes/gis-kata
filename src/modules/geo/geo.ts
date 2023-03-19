@@ -29,7 +29,7 @@ export interface FeatureCollectionDto<FEATURE extends FeatureDto> {
  */
 export interface FeatureDto<
   GEO extends GeometryDto = GeometryDto,
-  PROP = unknown
+  PROP extends object = {}
 > {
   type: "Feature";
   id?: number;

@@ -24,8 +24,8 @@ Build the deployable version using `npm run rebuild`
 * [x] Show map with Open Street Map
 * [x] Add vector layer with polygons
 * [x] Add vector layer with points
-* [ ] Simple styling
-* [ ] Selecting polygon to fit (create layer from objects)
+* [x] Simple styling
+* [x] Selecting polygon to fit (create layer from objects)
 * [ ] Clicking points to show overlays and fitting to content
 * [ ] Advanced styling
 * [ ] Adding multiple base layer options
