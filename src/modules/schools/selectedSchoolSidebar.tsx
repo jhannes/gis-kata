@@ -8,8 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { PageHeader } from "../pageHeader";
 import { useMapFeatureDtoLayer, useMapFit } from "../map";
-import { Style } from "ol/style";
-import { schoolImageStyle, schoolLabel } from "./schoolStyle";
+import { schoolStyle } from "./schoolStyle";
 
 export function SelectedSchoolSidebar({
   schools,
@@ -36,12 +35,7 @@ export function SelectedSchoolSidebarView({
   useMapFeatureDtoLayer(
     schools,
     {
-      style: (f) => {
-        return new Style({
-          text: id === f.getId() ? schoolLabel(f) : undefined,
-          image: schoolImageStyle(f, id === f.getId()),
-        });
-      },
+      style: (f) => schoolStyle(f, id === f.getId()),
     },
     createSchoolFeature
   );
