@@ -10,4 +10,7 @@ export type AreaFeatureDto = FeatureDto<
   MunicipalityPropertiesDto
 >;
 
-export type AreaFeatureCollectionDto = FeatureCollectionDto<AreaFeatureDto>;
+export type AreaFeatureCollectionDto = FeatureCollectionDto<
+  MultiPolygonDto,
+  MunicipalityPropertiesDto
+>;

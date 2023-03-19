@@ -1,24 +1,34 @@
-import { FeatureCollectionDto, FeatureDto, MultiPolygonDto } from "../geo";
+import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
-import { MultiPolygon } from "ol/geom";
+import { MultiPolygon, Point } from "ol/geom";
 
-function createGeometry(f: FeatureDto<MultiPolygonDto>) {
-  return new MultiPolygon(f.geometry.coordinates);
+function createGeometry(geo: GeometryDto) {
+  switch (geo.type) {
+    case "MultiPolygon":
+      return new MultiPolygon(geo.coordinates);
+    case "Point":
+      return new Point(geo.coordinates as number[]);
+    default:
+      throw new Error("Unimplemented geometry type " + geo.type);
+  }
 }
 
-export function createFeature(f: FeatureDto<MultiPolygonDto>) {
+export function createFeature<GEO extends GeometryDto, PROPS extends object>(
+  f: FeatureDto<GEO, PROPS>
+) {
   return new Feature({
     ...f.properties,
-    geometry: createGeometry(f),
+    geometry: createGeometry(f.geometry),
   });
 }
 
 export function createFeatureSource<
-  FEATURE extends FeatureDto<MultiPolygonDto>
+  GEO extends GeometryDto,
+  PROPS extends object
 >(
-  featureCollection?: FeatureCollectionDto<FEATURE>,
-  fn?: (feature: FEATURE) => Feature
+  featureCollection?: FeatureCollectionDto<GEO, PROPS>,
+  fn?: (feature: FeatureDto<GEO, PROPS>) => Feature
 ) {
   if (!featureCollection) {
     return new VectorSource();

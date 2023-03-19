@@ -1,7 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import { Layer } from "ol/layer";
 import { useMapContext } from "./mapContext";
-import { FeatureCollectionDto, FeatureDto, MultiPolygonDto } from "../geo";
+import {
+  FeatureCollectionDto,
+  FeatureDto,
+  GeometryDto,
+  MultiPolygonDto,
+} from "../geo";
 import { FitOptions } from "ol/View";
 import { MultiPolygon, Point } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
@@ -32,11 +37,12 @@ export function useMapFit(geometry: MultiPolygonDto, options: FitOptions) {
 }
 
 export function useMapFeatureDtoLayer<
-  FEATURE extends FeatureDto<MultiPolygonDto>
+  GEO extends GeometryDto,
+  PROPS extends object
 >(
-  features: FeatureCollectionDto<FEATURE>,
+  features: FeatureCollectionDto<GEO, PROPS> | undefined,
   options: { style?: StyleLike } = {},
-  fn?: (feature: FEATURE) => Feature
+  fn?: (feature: FeatureDto<GEO, PROPS>) => Feature
 ) {
   const layer = useMemo(() => {
     return new VectorLayer({

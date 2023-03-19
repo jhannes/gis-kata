@@ -1,4 +1,4 @@
-import { FeatureDto, PointDto } from "../geo";
+import { FeatureCollectionDto, FeatureDto, PointDto } from "../geo";
 
 interface SchoolPropertiesDto {
   navn: string;
@@ -11,3 +11,8 @@ interface SchoolPropertiesDto {
 }
 
 export type SchoolFeatureDto = FeatureDto<PointDto, SchoolPropertiesDto>;
+
+export type SchoolFeatureCollectionDto = FeatureCollectionDto<
+  PointDto,
+  SchoolPropertiesDto
+>;

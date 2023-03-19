@@ -1,12 +1,12 @@
 import React from "react";
-import { useFeatureCollection } from "../geo";
-import { AreaFeatureDto } from "./areas";
+import { Loading, useFeatureCollection } from "../geo";
+import { AreaFeatureCollectionDto } from "./areas";
 import { AreasSidebar } from "./areasSidebar";
 import { Route, Routes } from "react-router-dom";
 import { SelectedAreaSidebar } from "./selectedAreaSidebar";
 
-function useAreaFeatureCollection() {
-  return useFeatureCollection<AreaFeatureDto>("/gis-kata/geojson/areas.json");
+function useAreaFeatureCollection(): Loading<AreaFeatureCollectionDto> {
+  return useFeatureCollection("/gis-kata/geojson/areas.json");
 }
 
 export function AreasRoutes() {

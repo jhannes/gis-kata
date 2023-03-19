@@ -18,19 +18,19 @@ export type CoordinateReferenceSystemPropertiesDtoNameEnum =
 /**
  * GeoJSon Feature collection
  */
-export interface FeatureCollectionDto<FEATURE extends FeatureDto> {
+export interface FeatureCollectionDto<
+  GEO extends GeometryDto,
+  PROPS extends object
+> {
   type: "FeatureCollection";
   crs: CoordinateReferenceSystemDto;
-  features: Array<FEATURE>;
+  features: Array<FeatureDto<GEO, PROPS>>;
 }
 
 /**
  * GeoJSon Feature
  */
-export interface FeatureDto<
-  GEO extends GeometryDto = GeometryDto,
-  PROP extends object = {}
-> {
+export interface FeatureDto<GEO extends GeometryDto, PROP extends object> {
   type: "Feature";
   id?: number;
   geometry: GEO;
