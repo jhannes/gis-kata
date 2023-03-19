@@ -3,7 +3,7 @@ import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
 import { AreasRoutes } from "../areas";
-import { SchoolsSidebar } from "../schools";
+import { SchoolRoutes } from "../schools";
 
 export function Application() {
   return (
@@ -44,7 +44,7 @@ function ContentSidebar() {
     <aside id="content-sidebar">
       <Routes>
         <Route path={"/areas/*"} element={<AreasRoutes />} />
-        <Route path={"/schools/*"} element={<SchoolsSidebar />} />
+        <Route path={"/schools/*"} element={<SchoolRoutes />} />
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
       </Routes>

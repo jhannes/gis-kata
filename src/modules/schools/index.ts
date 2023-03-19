@@ -1,2 +1,2 @@
-export * from "./schoolsSidebar";
+export * from "./schoolRoutes";
 export * from "./schools";
