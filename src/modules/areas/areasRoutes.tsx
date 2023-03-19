@@ -6,6 +6,7 @@ import { createFeatureSource } from "../map";
 import { MunicipalityPropertiesDto } from "./areas";
 import { AreasSidebar } from "./areasSidebar";
 import { Route, Routes } from "react-router-dom";
+import { SelectedAreaSidebar } from "./selectedAreaSidebar";
 
 function useAreaFeatureCollection() {
   return useFeatureCollection<MultiPolygonDto, MunicipalityPropertiesDto>(
@@ -27,15 +28,12 @@ export function AreasRoutes() {
     return <div>Loading...</div>;
   }
 
+  const areas = areaFeatureCollection.data;
   return (
     <Routes>
-      <Route
-        path={"/"}
-        element={
-          <AreasSidebar areaFeatureCollection={areaFeatureCollection.data} />
-        }
-      />
-      <Route path={"*"} element={<h2>Not found</h2>} />
+      <Route path={"/"} element={<AreasSidebar areas={areas} />} />
+      <Route path={"/:id"} element={<SelectedAreaSidebar areas={areas} />} />
+      <Route path={"*"} element={<h2>Invalid path</h2>} />
     </Routes>
   );
 }

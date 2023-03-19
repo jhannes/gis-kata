@@ -4,11 +4,7 @@ import { sortBy } from "../localization/sortBy";
 import { Link } from "react-router-dom";
 import React from "react";
 
-export function AreasSidebar({
-  areaFeatureCollection,
-}: {
-  areaFeatureCollection: AreaFeatureCollectionDto;
-}) {
+export function AreasSidebar({ areas }: { areas: AreaFeatureCollectionDto }) {
   return (
     <>
       <PageHeader>
@@ -16,7 +12,7 @@ export function AreasSidebar({
       </PageHeader>
       <h2>Areas</h2>
       <div>
-        {areaFeatureCollection.features
+        {areas.features
           .map((f) => f.properties)
           .sort(sortBy((f) => f.navn))
           .map((f) => (
