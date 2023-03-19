@@ -5,6 +5,7 @@ import {
   PointDto,
   useFeatureCollection,
 } from "../geo";
+import { createFeature } from "../map";
 
 export interface SchoolPropertiesDto {
   navn: string;
@@ -39,4 +40,10 @@ export function slugify(s: SchoolPropertiesDto) {
 
 export function useSchools(): Loading<SchoolFeatureCollectionDto> {
   return useFeatureCollection("/gis-kata/geojson/schools.json");
+}
+
+export function createSchoolFeature(s: SchoolFeatureDto) {
+  const feature = createFeature(s);
+  feature.setId(slugify(s.properties));
+  return feature;
 }

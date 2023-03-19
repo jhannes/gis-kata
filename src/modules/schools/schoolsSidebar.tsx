@@ -1,10 +1,15 @@
-import { SchoolFeatureCollectionDto, slugify } from "./schools";
+import {
+  createSchoolFeature,
+  SchoolFeatureCollectionDto,
+  slugify,
+} from "./schools";
 import { PageHeader } from "../pageHeader";
 import { sortBy } from "../localization/sortBy";
 import { Link } from "react-router-dom";
 import React from "react";
-import { createFeature, useMapFeatureDtoLayer } from "../map";
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { useMapFeatureDtoLayer } from "../map";
+import { Style } from "ol/style";
+import { schoolImageStyle } from "./schoolStyle";
 
 export function SchoolsSidebar({
   schools,
@@ -13,24 +18,8 @@ export function SchoolsSidebar({
 }) {
   useMapFeatureDtoLayer(
     schools,
-    {
-      style: (f) =>
-        new Style({
-          image: new Circle({
-            radius: 5,
-            stroke: new Stroke({ color: "black" }),
-            fill:
-              f.getProperties().eierforhold === "Offentlig"
-                ? new Fill({ color: [0, 0, 255, 0.4] })
-                : new Fill({ color: [128, 0, 128, 0.4] }),
-          }),
-        }),
-    },
-    (s) => {
-      const feature = createFeature(s);
-      feature.setId(slugify(s.properties));
-      return feature;
-    }
+    { style: (f) => new Style({ image: schoolImageStyle(f) }) },
+    createSchoolFeature
   );
   return (
     <>

@@ -2,7 +2,7 @@ import { AreaFeatureCollectionDto, AreaFeatureDto } from "./areas";
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { createFeature, useMapFeatureDtoLayer, useMapFit } from "../map/";
-import { Circle, Fill, Stroke, Style, Text } from "ol/style";
+import { Fill, Stroke, Style, Text } from "ol/style";
 import { FeatureLike } from "ol/Feature";
 import {
   SchoolFeatureCollectionDto,
@@ -11,6 +11,7 @@ import {
 } from "../schools";
 import { sortBy } from "../localization/sortBy";
 import { PageHeader } from "../pageHeader";
+import { schoolImageStyle } from "../schools/schoolStyle";
 
 function SelectedAreaSidebarView({
   areas,
@@ -52,21 +53,13 @@ function SelectedAreaSidebarView({
     duration: 300,
   });
   useMapFeatureDtoLayer(schools, {
-    style: (f) => {
-      const opacity = schoolInArea(f.getProperties() as SchoolPropertiesDto)
-        ? 1
-        : 0.4;
-      return new Style({
-        image: new Circle({
-          radius: 5,
-          stroke: new Stroke({ color: "black" }),
-          fill:
-            f.getProperties().eierforhold === "Offentlig"
-              ? new Fill({ color: [0, 0, 255, opacity] })
-              : new Fill({ color: [128, 0, 128, opacity] }),
-        }),
-      });
-    },
+    style: (f) =>
+      new Style({
+        image: schoolImageStyle(
+          f,
+          schoolInArea(f.getProperties() as SchoolPropertiesDto)
+        ),
+      }),
   });
 
   return (

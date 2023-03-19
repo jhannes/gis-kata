@@ -1,4 +1,5 @@
 import {
+  createSchoolFeature,
   SchoolFeatureCollectionDto,
   SchoolFeatureDto,
   slugify,
@@ -6,8 +7,9 @@ import {
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { PageHeader } from "../pageHeader";
-import { createFeature, useMapFeatureDtoLayer, useMapFit } from "../map";
-import { Circle, Fill, Stroke, Style, Text } from "ol/style";
+import { useMapFeatureDtoLayer, useMapFit } from "../map";
+import { Style } from "ol/style";
+import { schoolImageStyle, schoolLabel } from "./schoolStyle";
 
 export function SelectedSchoolSidebar({
   schools,
@@ -31,40 +33,17 @@ export function SelectedSchoolSidebarView({
   school: SchoolFeatureDto;
 }) {
   const id = slugify(school.properties);
-  useMapFeatureDtoLayer(schools);
   useMapFeatureDtoLayer(
     schools,
     {
       style: (f) => {
-        const opacity = id === f.getId() ? 1 : 0.4;
-        const text =
-          id === f.getId()
-            ? new Text({
-                text: f.getProperties().navn,
-                offsetY: 10,
-                font: "14px Arial",
-                stroke: new Stroke({ color: "white", width: 1.5 }),
-                fill: new Fill({ color: "black" }),
-              })
-            : undefined;
         return new Style({
-          text,
-          image: new Circle({
-            radius: 5,
-            stroke: new Stroke({ color: "black" }),
-            fill:
-              f.getProperties().eierforhold === "Offentlig"
-                ? new Fill({ color: [0, 0, 255, opacity] })
-                : new Fill({ color: [128, 0, 128, opacity] }),
-          }),
+          text: id === f.getId() ? schoolLabel(f) : undefined,
+          image: schoolImageStyle(f, id === f.getId()),
         });
       },
     },
-    (s) => {
-      const feature = createFeature(s);
-      feature.setId(slugify(s.properties));
-      return feature;
-    }
+    createSchoolFeature
   );
   useMapFit(school.geometry, { maxZoom: 13, duration: 400 });
   const s = school.properties;
