@@ -3,7 +3,6 @@ import { Layer } from "ol/layer";
 import { useMapContext } from "./mapContext";
 import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
 import { FitOptions } from "ol/View";
-import { Point } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import { createFeatureSource, createGeometry } from "./createFeatureSource";
 import { StyleLike } from "ol/style/Style";
@@ -20,14 +19,7 @@ export function useMapLayer(layer: Layer) {
 export function useMapFit(geometry: GeometryDto, options: FitOptions) {
   const { view } = useMapContext();
   useEffect(() => {
-    const center = view.getCenter()!;
-    const zoom = view.getZoom();
     view.fit(createGeometry(geometry), options);
-    return () =>
-      view.fit(new Point(center), {
-        maxZoom: zoom,
-        duration: options.duration,
-      });
   }, [geometry, options]);
 }
 

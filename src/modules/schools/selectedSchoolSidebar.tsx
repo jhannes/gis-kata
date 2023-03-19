@@ -6,7 +6,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { PageHeader } from "../pageHeader";
-import { useMapFit } from "../map";
+import { useMapFeatureDtoLayer, useMapFit } from "../map";
 
 export function SelectedSchoolSidebar({
   schools,
@@ -14,6 +14,7 @@ export function SelectedSchoolSidebar({
   schools: SchoolFeatureCollectionDto;
 }) {
   const { id } = useParams();
+  useMapFeatureDtoLayer(schools);
   const school = schools.features.find((s) => slugify(s.properties) == id);
   if (!school) {
     return <h2>School not found</h2>;
@@ -34,7 +35,7 @@ export function SelectedSchoolSidebarView({
       <PageHeader>
         <h2>{s.navn}</h2>
       </PageHeader>
-      <Link to={".."}>..</Link>
+      <Link to={`/areas/${s.kommunenummer}`}>..</Link>
       <ul>
         <li>
           Trinn: {s.laveste_trinn}-{s.hoyeste_trinn}

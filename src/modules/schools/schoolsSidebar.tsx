@@ -3,8 +3,14 @@ import { PageHeader } from "../pageHeader";
 import { sortBy } from "../localization/sortBy";
 import { Link } from "react-router-dom";
 import React from "react";
+import { useMapFeatureDtoLayer } from "../map";
 
-export function SchoolsSidebar({ schools }: { schools: SchoolFeatureCollectionDto }) {
+export function SchoolsSidebar({
+  schools,
+}: {
+  schools: SchoolFeatureCollectionDto;
+}) {
+  useMapFeatureDtoLayer(schools);
   return (
     <>
       <PageHeader>

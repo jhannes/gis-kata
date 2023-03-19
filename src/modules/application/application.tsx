@@ -3,7 +3,7 @@ import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
 import { MapContextProvider, MapView } from "../map";
 import { AreasRoutes } from "../areas";
-import { SchoolRoutes } from "../schools";
+import { SchoolRoutes, useSchools } from "../schools";
 
 export function Application() {
   return (
@@ -31,7 +31,7 @@ export function Application() {
             <ContentSidebar />
           </main>
           <footer>
-            [<a href="http://github.com/jhannes/gis-kata"> source code </a>]
+            [<a href="https://github.com/jhannes/gis-kata"> source code </a>]
           </footer>
         </HashRouter>
       </MapContextProvider>
@@ -40,11 +40,23 @@ export function Application() {
 }
 
 function ContentSidebar() {
+  const schools = useSchools();
+
+  if (!schools.data) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <aside id="content-sidebar">
       <Routes>
-        <Route path={"/areas/*"} element={<AreasRoutes />} />
-        <Route path={"/schools/*"} element={<SchoolRoutes />} />
+        <Route
+          path={"/areas/*"}
+          element={<AreasRoutes schools={schools.data} />}
+        />
+        <Route
+          path={"/schools/*"}
+          element={<SchoolRoutes schools={schools.data} />}
+        />
         <Route path={"/item/:id"} element={<Item />} />
         <Route path={"/"} element={<ListItems />} />
       </Routes>

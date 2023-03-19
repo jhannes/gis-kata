@@ -1,4 +1,10 @@
-import { FeatureCollectionDto, FeatureDto, PointDto } from "../geo";
+import {
+  FeatureCollectionDto,
+  FeatureDto,
+  Loading,
+  PointDto,
+  useFeatureCollection,
+} from "../geo";
 
 export interface SchoolPropertiesDto {
   navn: string;
@@ -29,4 +35,8 @@ export function slugify(s: SchoolPropertiesDto) {
       .replace(/ /g, "-")
       .replace(/[^a-z0-9_-]/g, "")
   );
+}
+
+export function useSchools(): Loading<SchoolFeatureCollectionDto> {
+  return useFeatureCollection("/gis-kata/geojson/schools.json");
 }

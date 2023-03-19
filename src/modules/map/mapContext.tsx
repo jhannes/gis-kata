@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { ReactElement, useContext, useMemo, useState } from "react";
 import { Layer } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
@@ -15,10 +15,14 @@ export function useMapContext() {
 }
 
 export function MapContextProvider({ children }: { children: ReactElement }) {
-  const view = new View({
-    center: [10.754, 59.9115],
-    zoom: 5,
-  });
+  const view = useMemo(
+    () =>
+      new View({
+        center: [10.754, 59.9115],
+        zoom: 5,
+      }),
+    []
+  );
   const backgroundLayer = new TileLayer({
     source: new OSM(),
   });
