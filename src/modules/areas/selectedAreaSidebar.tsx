@@ -1,9 +1,23 @@
 import { AreaFeatureCollectionDto, AreaFeatureDto } from "./areas";
 import { Link, useParams } from "react-router-dom";
 import React from "react";
-import { useMapFit } from "../map/";
+import { useMapFeatureDtoLayer, useMapFit } from "../map/";
+import { Stroke, Style } from "ol/style";
 
-function SelectedAreaSidebarView({ area }: { area: AreaFeatureDto }) {
+function SelectedAreaSidebarView({
+  areas,
+  area,
+}: {
+  areas: AreaFeatureCollectionDto;
+  area: AreaFeatureDto;
+}) {
+  useMapFeatureDtoLayer(areas, {
+    style: new Style({
+      stroke: new Stroke({
+        color: "black",
+      }),
+    }),
+  });
   useMapFit(area.geometry, {
     padding: [50, 50, 50, 50],
     duration: 300,
@@ -17,16 +31,16 @@ function SelectedAreaSidebarView({ area }: { area: AreaFeatureDto }) {
   );
 }
 
-export function SelectedAreaSidebar(props: {
+export function SelectedAreaSidebar({
+  areas,
+}: {
   areas: AreaFeatureCollectionDto;
 }) {
   const { id } = useParams();
-  const area = props.areas.features.find(
-    (p) => p.properties.kommunenummer == id
-  );
+  const area = areas.features.find((p) => p.properties.kommunenummer == id);
   if (!area) {
     return <h2>Area not found</h2>;
   }
 
-  return <SelectedAreaSidebarView area={area} />;
+  return <SelectedAreaSidebarView areas={areas} area={area} />;
 }

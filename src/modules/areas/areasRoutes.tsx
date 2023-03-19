@@ -1,6 +1,4 @@
-import React, { useMemo } from "react";
-import VectorLayer from "ol/layer/Vector";
-import { createFeatureSource, useMapLayer } from "../map";
+import React from "react";
 import { useFeatureCollection } from "../geo";
 import { AreaFeatureDto } from "./areas";
 import { AreasSidebar } from "./areasSidebar";
@@ -13,13 +11,6 @@ function useAreaFeatureCollection() {
 
 export function AreasRoutes() {
   const areaFeatureCollection = useAreaFeatureCollection();
-  const areaLayer = useMemo(() => {
-    return new VectorLayer({
-      source: createFeatureSource(areaFeatureCollection.data),
-    });
-  }, [areaFeatureCollection.data]);
-
-  useMapLayer(areaLayer);
 
   if (areaFeatureCollection.loading || !areaFeatureCollection.data) {
     return <div>Loading...</div>;
