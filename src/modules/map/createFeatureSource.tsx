@@ -3,7 +3,7 @@ import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
 import { MultiPolygon, Point } from "ol/geom";
 
-function createGeometry(geo: GeometryDto) {
+export function createGeometry(geo: GeometryDto) {
   switch (geo.type) {
     case "MultiPolygon":
       return new MultiPolygon(geo.coordinates);

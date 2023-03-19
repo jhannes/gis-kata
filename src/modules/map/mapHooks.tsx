@@ -1,16 +1,11 @@
 import React, { useEffect, useMemo } from "react";
 import { Layer } from "ol/layer";
 import { useMapContext } from "./mapContext";
-import {
-  FeatureCollectionDto,
-  FeatureDto,
-  GeometryDto,
-  MultiPolygonDto,
-} from "../geo";
+import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
 import { FitOptions } from "ol/View";
-import { MultiPolygon, Point } from "ol/geom";
+import { Point } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
-import { createFeatureSource } from "./createFeatureSource";
+import { createFeatureSource, createGeometry } from "./createFeatureSource";
 import { StyleLike } from "ol/style/Style";
 import { Feature } from "ol";
 
@@ -22,12 +17,12 @@ export function useMapLayer(layer: Layer) {
   }, [layer]);
 }
 
-export function useMapFit(geometry: MultiPolygonDto, options: FitOptions) {
+export function useMapFit(geometry: GeometryDto, options: FitOptions) {
   const { view } = useMapContext();
   useEffect(() => {
     const center = view.getCenter()!;
     const zoom = view.getZoom();
-    view.fit(new MultiPolygon(geometry.coordinates), options);
+    view.fit(createGeometry(geometry), options);
     return () =>
       view.fit(new Point(center), {
         maxZoom: zoom,
