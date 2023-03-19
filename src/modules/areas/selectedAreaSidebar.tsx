@@ -1,25 +1,7 @@
 import { AreaFeatureCollectionDto, AreaFeatureDto } from "./areas";
 import { Link, useParams } from "react-router-dom";
-import React, { useEffect } from "react";
-import { MultiPolygonDto } from "../geo";
-import { useMapContext } from "../map";
-import { FitOptions } from "ol/View";
-import { MultiPolygon, Point } from "ol/geom";
-
-function useMapFit(geometry: MultiPolygonDto, options: FitOptions) {
-  const { view } = useMapContext();
-  useEffect(() => {
-    const center = view.getCenter()!;
-    const zoom = view.getZoom();
-    console.log({ center, zoom, geometry });
-    view.fit(new MultiPolygon(geometry.coordinates), options);
-    return () =>
-      view.fit(new Point(center), {
-        maxZoom: zoom,
-        duration: options.duration,
-      });
-  }, [geometry, options]);
-}
+import React from "react";
+import { useMapFit } from "../map/";
 
 function SelectedAreaSidebarView({ area }: { area: AreaFeatureDto }) {
   useMapFit(area.geometry, {
