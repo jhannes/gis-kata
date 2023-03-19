@@ -5,7 +5,7 @@ import { useMapContext } from "./mapContext";
 export function useMapLayer(layer: Layer) {
   const { setLayers } = useMapContext();
   useEffect(() => {
-    setLayers((old) => [...old, layer]);
+    if (layer) setLayers((old) => [...old, layer]);
     return () => setLayers((old) => old.filter((l) => l !== layer));
-  }, []);
+  }, [layer]);
 }
