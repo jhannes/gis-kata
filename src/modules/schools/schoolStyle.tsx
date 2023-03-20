@@ -13,7 +13,7 @@ export function schoolLabel(f: FeatureLike) {
 
 export function schoolImageStyle(f: FeatureLike, selected: boolean = false) {
   return new Circle({
-    radius: selected ? 14 : 5,
+    radius: 7,
     stroke: new Stroke({ color: "black" }),
     fill:
       f.getProperties().eierforhold === "Offentlig"

@@ -1,7 +1,18 @@
 import { AreaFeatureCollectionDto, AreaFeatureDto } from "./areas";
 import { Link, useParams } from "react-router-dom";
-import React from "react";
-import { createFeature, useMapFeatureDtoLayer, useMapFit } from "../map/";
+import React, {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  createFeature,
+  useMapContext,
+  useMapFeatureDtoLayer,
+  useMapFit,
+} from "../map/";
 import { Fill, Stroke, Style, Text } from "ol/style";
 import { FeatureLike } from "ol/Feature";
 import {
@@ -12,6 +23,66 @@ import {
 import { sortBy } from "../localization/sortBy";
 import { PageHeader } from "../pageHeader";
 import { schoolImageStyle } from "../schools/schoolStyle";
+import { Layer } from "ol/layer";
+import { MapBrowserEvent, Overlay } from "ol";
+import { Point } from "ol/geom";
+import { Coordinate } from "ol/coordinate";
+
+function useMapFeatureSelect(layerFilter?: (layer: Layer) => boolean) {
+  const [selectedFeatures, setSelectedFeatures] = useState<FeatureLike[]>([]);
+  const [selectedCoordinate, setSelectedCoordinate] = useState<
+    Coordinate | undefined
+  >();
+  const { map } = useMapContext();
+  useEffect(() => {
+    setSelectedFeatures([]);
+  }, []);
+
+  function handleClick(e: MapBrowserEvent<MouseEvent>) {
+    const features = map.getFeaturesAtPixel(e.pixel, {
+      layerFilter,
+      hitTolerance: 7,
+    });
+    setSelectedFeatures(features);
+    setSelectedCoordinate(
+      features.length > 0
+        ? (features[0].getGeometry() as Point).getCoordinates()
+        : undefined
+    );
+  }
+
+  useEffect(() => {
+    map.on("click", handleClick);
+    return () => map.un("click", handleClick);
+  }, []);
+
+  return { selectedFeatures, selectedCoordinate };
+}
+function MapOverlay({
+  children,
+  position,
+}: {
+  position: Array<number> | undefined;
+  children: React.ReactNode;
+}) {
+  const { map } = useMapContext();
+  const overlay = useMemo(() => new Overlay({}), []);
+  const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
+  useEffect(() => overlay.setPosition(position), [position]);
+  useEffect(() => {
+    overlay.setElement(overlayRef.current);
+    map.addOverlay(overlay);
+    return () => {
+      map.removeOverlay(overlay);
+    };
+  }, [overlay, overlayRef]);
+
+  return (
+    <div id="overlay" ref={overlayRef}>
+      {children}
+    </div>
+  );
+}
 
 function SelectedAreaSidebarView({
   areas,
@@ -52,7 +123,7 @@ function SelectedAreaSidebarView({
     padding: [50, 50, 50, 50],
     duration: 300,
   });
-  useMapFeatureDtoLayer(schools, {
+  const schoolLayer = useMapFeatureDtoLayer(schools, {
     style: (f) =>
       new Style({
         image: schoolImageStyle(
@@ -61,12 +132,22 @@ function SelectedAreaSidebarView({
         ),
       }),
   });
+  const { selectedFeatures, selectedCoordinate } = useMapFeatureSelect(
+    (l) => l === schoolLayer
+  );
 
   return (
     <>
       <PageHeader>
         <h2>{area.properties.navn}</h2>
       </PageHeader>
+      <MapOverlay position={selectedCoordinate}>
+        {selectedFeatures
+          .map((f) => f.getProperties() as SchoolPropertiesDto)
+          .map((s) => (
+            <div id={slugify(s)}>{s.navn}</div>
+          ))}
+      </MapOverlay>
       <Link to={".."}>..</Link>
       <ul>
         {schools.features

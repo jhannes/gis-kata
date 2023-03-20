@@ -1,13 +1,11 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
-import { Map } from "ol";
+import React, { MutableRefObject, useEffect, useRef } from "react";
 import { useGeographic } from "ol/proj";
 import { useMapContext } from "./mapContext";
 
 useGeographic();
 
 export function MapView() {
-  const { layers, view } = useMapContext();
-  const map = useMemo(() => new Map(), []);
+  const { layers, view, map } = useMapContext();
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   useEffect(() => map.setTarget(mapRef.current), [map, mapRef]);

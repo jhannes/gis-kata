@@ -1,0 +1,21 @@
+#overlay {
+    background-color: white;
+    padding: 0.25em;
+    border-radius: 0.25em;
+    bottom: -100%;
+    position: absolute;
+    transform: translate(-50%, 0);
+    margin-bottom: 1em;
+    white-space: nowrap;
+}
+
+#overlay:after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: -1em;
+    border-top: 1em solid white;
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+}

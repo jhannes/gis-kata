@@ -18,9 +18,7 @@ export function useMapLayer(layer: Layer) {
 
 export function useMapFit(geometry: GeometryDto, options: FitOptions) {
   const { view } = useMapContext();
-  useEffect(() => {
-    view.fit(createGeometry(geometry), options);
-  }, [geometry, options]);
+  useEffect(() => view.fit(createGeometry(geometry), options), [geometry]);
 }
 
 export function useMapFeatureDtoLayer<
@@ -38,4 +36,5 @@ export function useMapFeatureDtoLayer<
     });
   }, [features]);
   useMapLayer(layer);
+  return layer;
 }
