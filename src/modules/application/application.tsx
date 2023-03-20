@@ -7,9 +7,9 @@ import { SchoolRoutes, useSchools } from "../schools";
 
 export function Application() {
   return (
-    <PageHeaderContext>
-      <MapContextProvider>
-        <HashRouter>
+    <HashRouter>
+      <PageHeaderContext>
+        <MapContextProvider>
           <ShowPageHeader>
             <h1>Map demo application</h1>
           </ShowPageHeader>
@@ -33,9 +33,9 @@ export function Application() {
           <footer>
             [<a href="https://github.com/jhannes/gis-kata"> source code </a>]
           </footer>
-        </HashRouter>
-      </MapContextProvider>
-    </PageHeaderContext>
+        </MapContextProvider>
+      </PageHeaderContext>
+    </HashRouter>
   );
 }
 

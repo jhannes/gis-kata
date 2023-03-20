@@ -1,29 +1,17 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useMapContext } from "./mapContext";
-import { Overlay } from "ol";
 
 export function MapOverlay({
   children,
   position,
 }: {
   position: Array<number> | undefined;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const { map } = useMapContext();
-  const overlay = useMemo(() => new Overlay({}), []);
-  const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
-  useEffect(() => overlay.setPosition(position), [position]);
+  const { setOverlay } = useMapContext();
   useEffect(() => {
-    overlay.setElement(overlayRef.current);
-    map.addOverlay(overlay);
-    return () => {
-      map.removeOverlay(overlay);
-    };
-  }, [overlay, overlayRef]);
-
-  return (
-    <div id="overlay" ref={overlayRef}>
-      {children}
-    </div>
-  );
+    setOverlay({ position, children });
+    return () => setOverlay({ position: undefined });
+  }, [position]);
+  return null;
 }
