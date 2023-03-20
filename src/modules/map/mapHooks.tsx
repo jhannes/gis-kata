@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Layer } from "ol/layer";
 import { useMapContext } from "./mapContext";
 import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
@@ -6,7 +6,10 @@ import { FitOptions } from "ol/View";
 import VectorLayer from "ol/layer/Vector";
 import { createFeatureSource, createGeometry } from "./createFeatureSource";
 import { StyleLike } from "ol/style/Style";
-import { Feature } from "ol";
+import { Feature, MapBrowserEvent } from "ol";
+import { FeatureLike } from "ol/Feature";
+import { Coordinate } from "ol/coordinate";
+import { Point } from "ol/geom";
 
 export function useMapLayer(layer: Layer) {
   const { setLayers } = useMapContext();
@@ -37,4 +40,35 @@ export function useMapFeatureDtoLayer<
   }, [features]);
   useMapLayer(layer);
   return layer;
+}
+
+export function useMapFeatureSelect(layerFilter?: (layer: Layer) => boolean) {
+  const [selectedFeatures, setSelectedFeatures] = useState<FeatureLike[]>([]);
+  const [selectedCoordinate, setSelectedCoordinate] = useState<
+    Coordinate | undefined
+  >();
+  const { map } = useMapContext();
+  useEffect(() => {
+    setSelectedFeatures([]);
+  }, []);
+
+  function handleClick(e: MapBrowserEvent<MouseEvent>) {
+    const features = map.getFeaturesAtPixel(e.pixel, {
+      layerFilter,
+      hitTolerance: 7,
+    });
+    setSelectedFeatures(features);
+    setSelectedCoordinate(
+      features.length > 0
+        ? (features[0].getGeometry() as Point).getCoordinates()
+        : undefined
+    );
+  }
+
+  useEffect(() => {
+    map.on("click", handleClick);
+    return () => map.un("click", handleClick);
+  }, []);
+
+  return { selectedFeatures, position: selectedCoordinate };
 }
