@@ -1,8 +1,8 @@
 import { FeatureLike } from "ol/Feature";
 import { MapOverlay } from "../map";
-import { SchoolPropertiesDto, slugify } from "../schools";
 import React from "react";
 import { Link } from "react-router-dom";
+import { SchoolPropertiesDto, slugify } from "./schools";
 
 export function SelectedSchoolsOverlay({
   position,

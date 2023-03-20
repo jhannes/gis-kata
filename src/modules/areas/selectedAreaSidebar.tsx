@@ -12,12 +12,12 @@ import { FeatureLike } from "ol/Feature";
 import {
   SchoolFeatureCollectionDto,
   SchoolPropertiesDto,
+  SelectedSchoolsOverlay,
   slugify,
 } from "../schools";
 import { sortBy } from "../localization/sortBy";
 import { PageHeader } from "../pageHeader";
 import { schoolImageStyle } from "../schools/schoolStyle";
-import { SelectedSchoolsOverlay } from "./selectedSchoolsOverlay";
 
 function createAreaFeature(f: AreaFeatureDto) {
   const feature = createFeature(f);

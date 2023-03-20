@@ -7,8 +7,9 @@ import {
 import { Link, useParams } from "react-router-dom";
 import React from "react";
 import { PageHeader } from "../pageHeader";
-import { useMapFeatureDtoLayer, useMapFit } from "../map";
+import { useMapFeatureDtoLayer, useMapFeatureSelect, useMapFit } from "../map";
 import { schoolStyle } from "./schoolStyle";
+import { SelectedSchoolsOverlay } from "./selectedSchoolsOverlay";
 
 export function SelectedSchoolSidebar({
   schools,
@@ -32,20 +33,26 @@ export function SelectedSchoolSidebarView({
   school: SchoolFeatureDto;
 }) {
   const id = slugify(school.properties);
-  useMapFeatureDtoLayer(
+  const schoolLayer = useMapFeatureDtoLayer(
     schools,
     {
       style: (f) => schoolStyle(f, id === f.getId()),
     },
-    createSchoolFeature
+    createSchoolFeature,
+    [id]
   );
   useMapFit(school.geometry, { maxZoom: 13, duration: 400 });
+  const { selectedFeatures, position } = useMapFeatureSelect(
+    (l) => l === schoolLayer
+  );
+
   const s = school.properties;
   return (
     <>
       <PageHeader>
         <h2>{s.navn}</h2>
       </PageHeader>
+      <SelectedSchoolsOverlay position={position} selected={selectedFeatures} />
       <Link to={`/areas/${parseInt(s.kommunenummer)}`}>..</Link>
       <ul>
         <li>

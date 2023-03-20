@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { DependencyList, useEffect, useMemo, useState } from "react";
 import { Layer } from "ol/layer";
 import { useMapContext } from "./mapContext";
 import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
@@ -30,14 +30,15 @@ export function useMapFeatureDtoLayer<
 >(
   features: FeatureCollectionDto<GEO, PROPS> | undefined,
   options: { style?: StyleLike } = {},
-  fn?: (feature: FeatureDto<GEO, PROPS>) => Feature
+  fn?: (feature: FeatureDto<GEO, PROPS>) => Feature,
+  deps: DependencyList = []
 ) {
   const layer = useMemo(() => {
     return new VectorLayer({
       ...options,
       source: createFeatureSource(features, fn),
     });
-  }, [features]);
+  }, [features, ...deps]);
   useMapLayer(layer);
   return layer;
 }
@@ -55,7 +56,7 @@ export function useMapFeatureSelect(layerFilter?: (layer: Layer) => boolean) {
   function handleClick(e: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(e.pixel, {
       layerFilter,
-      hitTolerance: 7,
+      hitTolerance: 3,
     });
     setSelectedFeatures(features);
     setSelectedCoordinate(
