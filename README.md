@@ -18,7 +18,7 @@ Build the deployable version using `npm run rebuild`
 * [x] Create a basic React application
 * [x] Create proper build steps
 * [x] Deploy using github pages
-* [x] Basic application layout
+* [x] Basic application layout,
 * [x] React Router with page header
   * [x] Set page header using context
 * [x] Show map with Open Street Map
@@ -27,7 +27,7 @@ Build the deployable version using `npm run rebuild`
 * [x] Simple styling
 * [x] Selecting polygon to fit (create layer from objects)
 * [x] Advanced styling
-* [ ] Clicking points to show overlays and fitting to content
+* [x] Clicking points to show overlays and fitting to content
 * [ ] Adding multiple base layer options
 * [ ] Remember location on refresh
 * [ ] Draw features on the map

@@ -1,7 +1,7 @@
 import React from "react";
 import { HashRouter, Link, Route, Routes, useParams } from "react-router-dom";
 import { PageHeader, PageHeaderContext, ShowPageHeader } from "../pageHeader";
-import { MapContextProvider, MapView } from "../map";
+import { MapBaseLayerSelector, MapContextProvider, MapView } from "../map";
 import { AreasRoutes } from "../areas";
 import { SchoolRoutes, useSchools } from "../schools";
 
@@ -27,7 +27,9 @@ export function Application() {
                 <li>Help</li>
               </nav>
             </aside>
-            <MapView />
+            <MapView>
+              <MapBaseLayerSelector baseLayers={[]} />
+            </MapView>
             <ContentSidebar />
           </main>
           <footer>
