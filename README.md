@@ -28,7 +28,8 @@ Build the deployable version using `npm run rebuild`
 * [x] Selecting polygon to fit (create layer from objects)
 * [x] Advanced styling
 * [x] Clicking points to show overlays and fitting to content
-* [ ] Adding multiple base layer options
-* [ ] Remember location on refresh
+* [x] Adding multiple base layer options
+* [ ] Correct projection based on background layer
+* [ ] Remember location and background layer on refresh
 * [ ] Draw features on the map
 

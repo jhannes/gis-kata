@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/jhannes/gis-kata#readme",
   "devDependencies": {
+    "@types/proj4": "^2.5.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "parcel": "^2.8.3",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "ol": "^7.3.0",
+    "proj4": "^2.9.0",
     "react-router": "^6.9.0",
     "react-router-dom": "^6.9.0"
   }

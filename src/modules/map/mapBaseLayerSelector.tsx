@@ -6,7 +6,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MapLayerDefinition } from "./baselayers";
+import { LoadedLayer, loadLayer, MapLayerDefinition } from "./baseLayers";
+import { useMapContext } from "./mapContext";
+import TileLayer from "ol/layer/Tile";
 
 const RadioButtonContext = React.createContext({
   selected: "",
@@ -14,11 +16,23 @@ const RadioButtonContext = React.createContext({
 });
 
 function BaseLayerRadioButton({ layer }: { layer: MapLayerDefinition }) {
+  const { setBackgroundLayer } = useMapContext();
   const { selected, setSelected } = useContext(RadioButtonContext);
+  const [loadedLayer, setLoadedLayer] = useState<LoadedLayer>();
+  useEffect(() => {
+    loadLayer(layer).then(setLoadedLayer);
+  }, []);
 
   function handleChange() {
-    setSelected(layer.name);
+    if (loadedLayer && "source" in loadedLayer) {
+      setSelected(layer.name);
+      setBackgroundLayer(new TileLayer({ source: loadedLayer.source }));
+    }
   }
+
+  const disabled = !loadedLayer || "error" in loadedLayer;
+  const error =
+    loadedLayer && "error" in loadedLayer ? loadedLayer.error : undefined;
 
   return (
     <div>
@@ -27,9 +41,11 @@ function BaseLayerRadioButton({ layer }: { layer: MapLayerDefinition }) {
           name="baseLayerOption"
           type="radio"
           checked={layer.name === selected}
+          disabled={disabled}
           onChange={handleChange}
         />
         {layer.name}
+        {error && <span>{error}</span>}
       </label>
     </div>
   );
