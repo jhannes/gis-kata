@@ -11,7 +11,7 @@ import React, {
 import { Layer } from "ol/layer";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
-import { Map, Overlay, View } from "ol";
+import { Map, MapEvent, Overlay, View } from "ol";
 
 export const MapContext = React.createContext({
   map: new Map(),
@@ -30,9 +30,12 @@ export function useMapContext() {
 
 export function MapContextProvider({ children }: { children: ReactNode }) {
   const map = useMemo(() => new Map({}), []);
-  const [view, setView] = useState(
-    new View({ center: [10.754, 59.9115], zoom: 5 })
-  );
+
+  const viewPort = useSaveMapViewPort(map, {
+    center: [10.754, 59.9115],
+    zoom: 5,
+  });
+  const [view, setView] = useState(new View(viewPort));
 
   const [backgroundLayer, setBackgroundLayer] = useState<Layer>(
     () => new TileLayer({ source: new OSM() })
@@ -100,4 +103,27 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
       </div>
     </MapContext.Provider>
   );
+}
+
+function useSaveMapViewPort(
+  map: Map,
+  defaultViewport: { center: number[]; zoom: number }
+) {
+  function handleMoveend(event: MapEvent) {
+    const view = event.map.getView();
+    sessionStorage.setItem(
+      "viewport",
+      JSON.stringify({ center: view.getCenter(), zoom: view.getZoom() })
+    );
+  }
+
+  useEffect(() => {
+    map.on("moveend", handleMoveend);
+    return () => map.un("moveend", handleMoveend);
+  }, [map]);
+
+  return useMemo(() => {
+    const savedViewport = sessionStorage.getItem("viewport");
+    return savedViewport ? JSON.parse(savedViewport) : defaultViewport;
+  }, []);
 }

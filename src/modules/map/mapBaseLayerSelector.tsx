@@ -3,6 +3,7 @@ import React, {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -18,15 +19,21 @@ const RadioButtonContext = React.createContext({
 function BaseLayerRadioButton({ layer }: { layer: MapLayerDefinition }) {
   const { setBackgroundLayer } = useMapContext();
   const { selected, setSelected } = useContext(RadioButtonContext);
+  const checked = useMemo(() => selected === layer.name, [selected]);
   const [loadedLayer, setLoadedLayer] = useState<LoadedLayer>();
   useEffect(() => {
     loadLayer(layer).then(setLoadedLayer);
   }, []);
 
+  useEffect(() => {
+    if (checked && loadedLayer && "source" in loadedLayer) {
+      setBackgroundLayer(new TileLayer({ source: loadedLayer.source }));
+    }
+  }, [checked, loadedLayer]);
+
   function handleChange() {
     if (loadedLayer && "source" in loadedLayer) {
       setSelected(layer.name);
-      setBackgroundLayer(new TileLayer({ source: loadedLayer.source }));
     }
   }
 
@@ -40,7 +47,7 @@ function BaseLayerRadioButton({ layer }: { layer: MapLayerDefinition }) {
         <input
           name="baseLayerOption"
           type="radio"
-          checked={layer.name === selected}
+          checked={checked}
           disabled={disabled}
           onChange={handleChange}
         />
@@ -56,7 +63,12 @@ function BaseLayerRadioButtonList({
 }: {
   baseLayers: MapLayerDefinition[];
 }) {
-  const [selected, setSelected] = useState(baseLayers[0].name);
+  const [selected, setSelected] = useState(
+    localStorage.getItem("backgroundLayer") || baseLayers[0].name
+  );
+  useEffect(() => {
+    localStorage.setItem("backgroundLayer", selected);
+  }, [selected]);
   return (
     <RadioButtonContext.Provider value={{ selected, setSelected }}>
       <div>
