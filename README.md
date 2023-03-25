@@ -29,7 +29,7 @@ Build the deployable version using `npm run rebuild`
 * [x] Advanced styling
 * [x] Clicking points to show overlays and fitting to content
 * [x] Adding multiple base layer options
-* [ ] Correct projection based on background layer
+* [x] Correct projection based on background layer
 * [ ] Remember location and background layer on refresh
 * [ ] Draw features on the map
 

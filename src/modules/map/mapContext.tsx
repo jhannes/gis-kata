@@ -30,12 +30,9 @@ export function useMapContext() {
 
 export function MapContextProvider({ children }: { children: ReactNode }) {
   const map = useMemo(() => new Map({}), []);
-  const view = useMemo(() => {
-    return new View({
-      center: [10.754, 59.9115],
-      zoom: 5,
-    });
-  }, []);
+  const [view, setView] = useState(
+    new View({ center: [10.754, 59.9115], zoom: 5 })
+  );
 
   const [backgroundLayer, setBackgroundLayer] = useState<Layer>(
     () => new TileLayer({ source: new OSM() })
@@ -44,6 +41,22 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
   const layers = useMemo(
     () => [backgroundLayer, ...featureLayers],
     [backgroundLayer, featureLayers]
+  );
+
+  const projection = useMemo(() => {
+    return backgroundLayer.getSource()?.getProjection() || undefined;
+  }, [backgroundLayer]);
+  useEffect(
+    () =>
+      setView(
+        (v) =>
+          new View({
+            center: v.getCenter(),
+            zoom: v.getZoom(),
+            projection,
+          })
+      ),
+    [projection]
   );
 
   const overlay = useMemo(() => new Overlay({}), []);
