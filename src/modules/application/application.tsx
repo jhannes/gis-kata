@@ -11,6 +11,7 @@ import {
 } from "../map";
 import { AreasRoutes } from "../areas";
 import { SchoolRoutes, useSchools } from "../schools";
+import { SettingsRoutes } from "../settings";
 
 export function Application() {
   return (
@@ -31,7 +32,9 @@ export function Application() {
                   <Link to={"/schools"}>Schools</Link>
                 </li>
                 <div className="spacer"></div>
-                <li>Help</li>
+                <li>
+                  ⚙ <Link to={"/settings"}>Settings</Link>
+                </li>
               </nav>
             </aside>
             <MapView>
@@ -69,7 +72,9 @@ function ContentSidebar() {
           element={<SchoolRoutes schools={schools.data} />}
         />
         <Route path={"/item/:id"} element={<Item />} />
+        <Route path={"/settings/*"} element={<SettingsRoutes />} />
         <Route path={"/"} element={<ListItems />} />
+        <Route path={"*"} element={<h2>Not found</h2>} />
       </Routes>
     </aside>
   );
