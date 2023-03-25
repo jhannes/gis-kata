@@ -27,6 +27,7 @@
     "@types/proj4": "^2.5.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/uuid": "^9.0.1",
     "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "prettier": "^2.8.4",
@@ -40,6 +41,7 @@
     "ol": "^7.3.0",
     "proj4": "^2.9.0",
     "react-router": "^6.9.0",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.9.0",
+    "uuid": "^9.0.0"
   }
 }
