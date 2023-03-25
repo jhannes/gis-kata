@@ -12,10 +12,10 @@ import { Coordinate } from "ol/coordinate";
 import { Point } from "ol/geom";
 
 export function useMapLayer(layer: Layer) {
-  const { setLayers } = useMapContext();
+  const { setFeatureLayers } = useMapContext();
   useEffect(() => {
-    if (layer) setLayers((old) => [...old, layer]);
-    return () => setLayers((old) => old.filter((l) => l !== layer));
+    if (layer) setFeatureLayers((old) => [...old, layer]);
+    return () => setFeatureLayers((old) => old.filter((l) => l !== layer));
   }, [layer]);
 }
 

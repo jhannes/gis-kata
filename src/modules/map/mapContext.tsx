@@ -17,7 +17,8 @@ export const MapContext = React.createContext({
   map: new Map(),
   view: new View(),
   layers: [] as Layer[],
-  setLayers: (_: (old: Layer[]) => Layer[]) => {},
+  setBackgroundLayer: (_: Layer) => {},
+  setFeatureLayers: (_: (old: Layer[]) => Layer[]) => {},
   setOverlay: (
     _: { position: undefined } | { position: number[]; children: ReactNode }
   ) => {},
@@ -36,10 +37,14 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const backgroundLayer = new TileLayer({
-    source: new OSM(),
-  });
-  const [layers, setLayers] = useState<Layer[]>([backgroundLayer]);
+  const [backgroundLayer, setBackgroundLayer] = useState<Layer>(
+    () => new TileLayer({ source: new OSM() })
+  );
+  const [featureLayers, setFeatureLayers] = useState<Layer[]>([]);
+  const layers = useMemo(
+    () => [backgroundLayer, ...featureLayers],
+    [backgroundLayer, featureLayers]
+  );
 
   const overlay = useMemo(() => new Overlay({}), []);
   const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
@@ -66,7 +71,16 @@ export function MapContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <MapContext.Provider value={{ map, setLayers, layers, view, setOverlay }}>
+    <MapContext.Provider
+      value={{
+        map,
+        setBackgroundLayer,
+        setFeatureLayers,
+        layers,
+        view,
+        setOverlay,
+      }}
+    >
       {children}
       <div id="overlay" ref={overlayRef}>
         {overlayContent}
