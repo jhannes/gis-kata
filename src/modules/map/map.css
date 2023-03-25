@@ -19,3 +19,26 @@
   border-left: 0.5em solid transparent;
   border-right: 0.5em solid transparent;
 }
+
+#map {
+  position: relative;
+}
+
+.map-base-layer-selector {
+  left: 0.5em;
+  top: 4em;
+  z-index: 10;
+  position: absolute;
+  background-color: unset;
+}
+
+.map-base-layer-selector > div {
+  max-height: 0;
+  overflow: hidden;
+  background: white;
+  transition: max-height 0.4s;
+}
+
+.map-base-layer-selector.open > div {
+  max-height: 500px;
+}
