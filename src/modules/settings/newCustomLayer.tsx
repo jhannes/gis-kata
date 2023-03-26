@@ -9,7 +9,7 @@ export function NewCustomLayer() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    const layer = { name, id: uuidv4() };
+    const layer = { name, id: uuidv4(), features: {} };
     updateCustomLayers((layers) => (layers[layer.id] = layer));
 
     navigate(`../${layer.id}`);
