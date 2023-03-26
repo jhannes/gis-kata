@@ -22,10 +22,16 @@ export function DrawNewObject({
   const { map } = useMapContext();
   const navigate = useNavigate();
   const drawSource = useMemo(() => new VectorSource(), []);
-  const layer = useMemo(() => new VectorLayer({ source: drawSource }), []);
+  const [geometry, setGeometry] = useState<Geometry>();
+  const layer = useMemo(() => {
+    return new VectorLayer({
+      source: new VectorSource({
+        features: geometry ? [new Feature(geometry)] : [],
+      }),
+    });
+  }, [geometry]);
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type") as Type;
-  const [geometry, setGeometry] = useState<Geometry>();
   useMapLayer(layer);
   useEffect(() => {
     if (!geometry) {
@@ -39,7 +45,11 @@ export function DrawNewObject({
 
         const geometry = e.feature.getGeometry();
         if (geometry?.getType() === "Circle") {
-          setGeometry(fromCircle(geometry as Circle));
+          const circle = geometry as Circle;
+          circle.transform("EPSG:4326", map.getView().getProjection());
+          const polygon = fromCircle(circle);
+          polygon.transform(map.getView().getProjection(), "EPSG:4326");
+          setGeometry(polygon);
         } else {
           setGeometry(geometry);
         }

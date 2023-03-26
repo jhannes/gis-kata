@@ -44,6 +44,16 @@ function CustomLayerOverview({
           <button>Polygon</button>
         </Link>
       </div>
+      <div>
+        <Link to={"./draw?type=LineString"}>
+          <button>Linestring</button>
+        </Link>
+      </div>
+      <div>
+        <Link to={"./draw?type=Circle"}>
+          <button>Circle</button>
+        </Link>
+      </div>
     </>
   );
 }
