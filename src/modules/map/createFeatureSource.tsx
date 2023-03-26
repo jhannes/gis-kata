@@ -1,12 +1,14 @@
 import { FeatureCollectionDto, FeatureDto, GeometryDto } from "../geo";
 import VectorSource from "ol/source/Vector";
 import { Feature } from "ol";
-import { MultiPolygon, Point } from "ol/geom";
+import { MultiPolygon, Point, Polygon } from "ol/geom";
 
 export function createGeometry(geo: GeometryDto) {
   switch (geo.type) {
     case "MultiPolygon":
       return new MultiPolygon(geo.coordinates);
+    case "Polygon":
+      return new Polygon(geo.coordinates);
     case "Point":
       return new Point(geo.coordinates as number[]);
     default:

@@ -9,7 +9,7 @@ export function SettingsRoutes() {
     <Routes>
       <Route path={"/"} element={<ShowAllSettings />} />
       <Route path={"/new"} element={<NewCustomLayer />} />
-      <Route path={"/:id"} element={<ShowCustomLayer />} />
+      <Route path={"/:id/*"} element={<ShowCustomLayer />} />
       <Route path={"*"} element={<h2>Invalid path</h2>} />
     </Routes>
   );
