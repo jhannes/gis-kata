@@ -31,5 +31,10 @@ Build the deployable version using `npm run rebuild`
 * [x] Adding multiple base layer options
 * [x] Correct projection based on background layer
 * [x] Remember location and background layer on refresh
-* [ ] Draw features on the map
+* [x] Draw features on the map
+* [ ] Nicities: Zoom to my position
+* [ ] Nicities: Graticule
+* [ ] Nicities: Hover position/center position if no mouse 
+* [ ] Responsive redesign
+* [ ] Edit custom layer
 
