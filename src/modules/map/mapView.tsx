@@ -82,7 +82,6 @@ export function MapView({
   function handleMapPointer(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel, { hitTolerance: 3 });
     if (features.length > 0) {
-      event.target.cursor = "pointer";
       map.getViewport().style.cursor = "pointer";
       onHoverSkole(features[0] as Feature<MultiPoint>);
     } else {
