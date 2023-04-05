@@ -1,0 +1,15 @@
+#root {
+    background-color: lightyellow;
+}
+
+header, footer {
+    background-color: pink;
+}
+
+nav, aside {
+    background-color: orange;
+}
+
+#map {
+    background-color: lightblue;
+}
