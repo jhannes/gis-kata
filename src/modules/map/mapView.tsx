@@ -7,7 +7,7 @@ import { useGeographic } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
-import { Circle, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style, Text } from "ol/style";
 
 useGeographic();
 
@@ -22,12 +22,25 @@ export function MapView() {
             url: "/geojson/vgs.json",
             format: new GeoJSON(),
           }),
-          style: new Style({
-            image: new Circle({
-              radius: 10,
-              stroke: new Stroke({ color: "red" }),
-            }),
-          }),
+          style: (feature) => {
+            const school = feature.getProperties();
+            return new Style({
+              text: new Text({
+                stroke: new Stroke({ color: "white", width: 2 }),
+                font: "18px sans",
+                text: school.skolenavn?.substring(0, 20),
+                offsetY: 15,
+              }),
+              image: new Circle({
+                radius: 6,
+                stroke: new Stroke({ color: "black" }),
+                fill:
+                  school.eierforh === "Privat"
+                    ? new Fill({ color: "purple" })
+                    : new Fill({ color: "blue" }),
+              }),
+            });
+          },
         }),
       ],
       view: new View({
