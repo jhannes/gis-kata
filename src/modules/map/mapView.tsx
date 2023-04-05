@@ -7,6 +7,7 @@ import { useGeographic } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
+import { Circle, Stroke, Style } from "ol/style";
 
 useGeographic();
 
@@ -20,6 +21,12 @@ export function MapView() {
           source: new VectorSource({
             url: "/geojson/vgs.json",
             format: new GeoJSON(),
+          }),
+          style: new Style({
+            image: new Circle({
+              radius: 10,
+              stroke: new Stroke({ color: "red" }),
+            }),
           }),
         }),
       ],
