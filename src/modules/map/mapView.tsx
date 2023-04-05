@@ -1,5 +1,13 @@
 import * as React from "react";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Feature, Map, MapBrowserEvent, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
@@ -13,7 +21,11 @@ import { distance } from "ol/coordinate";
 
 useGeographic();
 
-export function MapView() {
+export function MapView({
+  onHoverSkole,
+}: {
+  onHoverSkole: Dispatch<SetStateAction<Feature<MultiPoint> | undefined>>;
+}) {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
   const map = useMemo(() => {
     return new Map({
@@ -62,8 +74,6 @@ export function MapView() {
   }, [overlay, overlayRef]);
   useEffect(() => overlay.setPosition(overlayPosition), [overlayPosition]);
 
-  const [hoverSkole, setHoverSkole] = useState<Feature<MultiPoint>>();
-
   function handleMapClick(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel, { hitTolerance: 3 });
     setSelectedSkoleList(features as Feature<MultiPoint>[]);
@@ -74,10 +84,10 @@ export function MapView() {
     if (features.length > 0) {
       event.target.cursor = "pointer";
       map.getViewport().style.cursor = "pointer";
-      setHoverSkole(features[0] as Feature<MultiPoint>);
+      onHoverSkole(features[0] as Feature<MultiPoint>);
     } else {
       map.getViewport().style.cursor = "";
-      setHoverSkole((old) => {
+      onHoverSkole((old) => {
         if (old?.getGeometry()) {
           const d = distance(
             event.coordinate,
@@ -91,10 +101,6 @@ export function MapView() {
       });
     }
   }
-
-  useEffect(() => {
-    console.log({ hoverSkole });
-  }, [hoverSkole]);
 
   useEffect(() => {
     map.on("click", handleMapClick);
