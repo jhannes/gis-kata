@@ -13,13 +13,16 @@ export function MapView() {
     return new Map({
       layers: [new TileLayer({ source: new OSM() })],
       view: new View({
-        center: [10.7, 59.9],
-        zoom: 10,
+        center: [10.74, 59.92],
+        zoom: 14,
       }),
     });
   }, []);
 
-  useEffect(() => map.setTarget(mapRef.current), [map, mapRef]);
+  useEffect(() => {
+    map.setTarget(mapRef.current);
+    return () => map.setTarget(undefined);
+  }, [map, mapRef]);
 
   return <div id="map" ref={mapRef} />;
 }

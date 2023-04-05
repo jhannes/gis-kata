@@ -19,8 +19,8 @@ header, footer {
 
 nav, aside {
     background-color: orange;
-    min-width: 15em;
-    max-width: 30em;
+    min-width: 10em;
+    max-width: 25em;
 }
 
 #map {
