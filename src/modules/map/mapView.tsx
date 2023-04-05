@@ -37,7 +37,7 @@ export function MapView() {
     return () => map.setTarget(undefined);
   }, [map, mapRef]);
 
-  function handleVgsClick(event: MapBrowserEvent<MouseEvent>) {
+  function handleMapClick(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel, {
       hitTolerance: 3,
     });
@@ -45,8 +45,8 @@ export function MapView() {
   }
 
   useEffect(() => {
-    map.on("click", handleVgsClick);
-    return () => map.un("click", handleVgsClick);
+    map.on("click", handleMapClick);
+    return () => map.un("click", handleMapClick);
   }, [map]);
 
   return <div id="map" ref={mapRef} />;
