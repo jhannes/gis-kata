@@ -17,10 +17,17 @@ header, footer {
     background-color: pink;
 }
 
-nav, aside {
+nav {
     background-color: orange;
     min-width: 10em;
     max-width: 25em;
+}
+
+aside {
+    background-color: orange;
+    overflow: hidden;
+    min-width: 0;
+    max-width: 0;
 }
 
 #map {
