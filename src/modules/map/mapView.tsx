@@ -1,6 +1,6 @@
 import * as React from "react";
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
-import { Map, View } from "ol";
+import { Map, MapBrowserEvent, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { useGeographic } from "ol/proj";
@@ -36,6 +36,18 @@ export function MapView() {
     map.setTarget(mapRef.current);
     return () => map.setTarget(undefined);
   }, [map, mapRef]);
+
+  function handleVgsClick(event: MapBrowserEvent<MouseEvent>) {
+    const features = map.getFeaturesAtPixel(event.pixel, {
+      hitTolerance: 3,
+    });
+    console.log({ features });
+  }
+
+  useEffect(() => {
+    map.on("click", handleVgsClick);
+    return () => map.un("click", handleVgsClick);
+  }, [map]);
 
   return <div id="map" ref={mapRef} />;
 }
