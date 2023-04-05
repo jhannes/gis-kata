@@ -9,6 +9,7 @@ import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import { vgsLayerStyle } from "./vgsLayerStyle";
 import { MultiPoint } from "ol/geom";
+import { distance } from "ol/coordinate";
 
 useGeographic();
 
@@ -61,14 +62,47 @@ export function MapView() {
   }, [overlay, overlayRef]);
   useEffect(() => overlay.setPosition(overlayPosition), [overlayPosition]);
 
+  const [hoverSkole, setHoverSkole] = useState<Feature<MultiPoint>>();
+
   function handleMapClick(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel, { hitTolerance: 3 });
     setSelectedSkoleList(features as Feature<MultiPoint>[]);
   }
 
+  function handleMapPointer(event: MapBrowserEvent<MouseEvent>) {
+    const features = map.getFeaturesAtPixel(event.pixel, { hitTolerance: 3 });
+    if (features.length > 0) {
+      event.target.cursor = "pointer";
+      map.getViewport().style.cursor = "pointer";
+      setHoverSkole(features[0] as Feature<MultiPoint>);
+    } else {
+      map.getViewport().style.cursor = "";
+      setHoverSkole((old) => {
+        if (old?.getGeometry()) {
+          const d = distance(
+            event.coordinate,
+            old?.getGeometry()?.getCoordinates()[0]!
+          );
+          if (d < 0.005) {
+            return old;
+          }
+        }
+        return undefined;
+      });
+    }
+  }
+
+  useEffect(() => {
+    console.log({ hoverSkole });
+  }, [hoverSkole]);
+
   useEffect(() => {
     map.on("click", handleMapClick);
-    return () => map.un("click", handleMapClick);
+    map.on("pointermove", handleMapPointer);
+    return () => {
+      map.un("pointermove", handleMapPointer);
+      map.un("click", handleMapClick);
+    };
   }, [map]);
 
   return (
@@ -77,7 +111,7 @@ export function MapView() {
         {selectedSkoleList
           .map((s) => s.getProperties())
           .map((skole) => (
-            <div>
+            <div key={skole.skolenavn}>
               <h3>{skole.skolenavn}</h3>
             </div>
           ))}
