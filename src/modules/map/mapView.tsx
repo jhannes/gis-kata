@@ -1,6 +1,6 @@
 import * as React from "react";
-import { MutableRefObject, useEffect, useMemo, useRef } from "react";
-import { Map, MapBrowserEvent, View } from "ol";
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { Map, MapBrowserEvent, Overlay, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { useGeographic } from "ol/proj";
@@ -8,6 +8,8 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { GeoJSON } from "ol/format";
 import { vgsLayerStyle } from "./vgsLayerStyle";
+import { MultiPoint } from "ol/geom";
+import { Coordinate } from "ol/coordinate";
 
 useGeographic();
 
@@ -31,17 +33,30 @@ export function MapView() {
       }),
     });
   }, []);
-
   useEffect(() => {
     map.setTarget(mapRef.current);
     return () => map.setTarget(undefined);
   }, [map, mapRef]);
 
+  const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const overlay = useMemo(() => new Overlay({}), []);
+  useEffect(() => {
+    overlay.setElement(overlayRef.current);
+    map.addOverlay(overlay);
+  }, [overlay, overlayRef]);
+  const [overlayPos, setOverlayPos] = useState<Coordinate | undefined>();
+  useEffect(() => overlay.setPosition(overlayPos), [overlay, overlayPos]);
+
   function handleMapClick(event: MapBrowserEvent<MouseEvent>) {
-    const features = map.getFeaturesAtPixel(event.pixel, {
-      hitTolerance: 3,
-    });
-    console.log({ features });
+    const features = map.getFeaturesAtPixel(event.pixel, { hitTolerance: 3 });
+    if (features.length > 0) {
+      const coordinates = (
+        features[0].getGeometry() as MultiPoint
+      ).getCoordinates()[0];
+      setOverlayPos(coordinates);
+    } else {
+      setOverlayPos(undefined);
+    }
   }
 
   useEffect(() => {
@@ -49,5 +64,11 @@ export function MapView() {
     return () => map.un("click", handleMapClick);
   }, [map]);
 
-  return <div id="map" ref={mapRef} />;
+  return (
+    <div id="map" ref={mapRef}>
+      <div id="overlay" ref={overlayRef}>
+        This is the overlay
+      </div>
+    </div>
+  );
 }
