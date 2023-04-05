@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel serve src/index.html",
-    "build:typescript": "tsc --noEmit"
+    "build:typescript": "tsc --noEmit",
+    "prettier": "prettier --write src/",
+    "build:prettier": "prettier --check src/",
+    "build": "npm run build:prettier && npm run build:typescript"
   },
   "repository": {
     "type": "git",
@@ -23,6 +26,7 @@
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "parcel": "^2.8.3",
+    "prettier": "^2.8.7",
     "process": "^0.11.10",
     "typescript": "^5.0.3"
   },
