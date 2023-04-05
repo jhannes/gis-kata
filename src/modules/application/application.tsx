@@ -1,4 +1,5 @@
 import * as React from "react";
+import { MapView } from "../map";
 
 export function Application() {
   return (
@@ -8,7 +9,7 @@ export function Application() {
       </header>
       <main>
         <nav>Navigation</nav>
-        <div id="map">I'm a map</div>
+        <MapView />
         <aside>Details</aside>
       </main>
       <footer>Built with OpenLayers</footer>
