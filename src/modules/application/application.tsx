@@ -9,13 +9,13 @@ export function Application() {
   return (
     <>
       <header>
-        <h1>{hoverSkole?.getProperties()?.skolenavn || "Videregående skoler"}</h1>
+        <h1>
+          {hoverSkole?.getProperties()?.skolenavn || "Videregående skoler"}
+        </h1>
       </header>
       <main>
         <nav>
-          <div>
-          Navigation
-          </div>
+          <div>Navigation</div>
         </nav>
         <MapView onHoverSkole={setHoverSkole} />
         <aside>Details</aside>
