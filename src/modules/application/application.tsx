@@ -16,7 +16,9 @@ export function Application() {
         <MapView onHoverSkole={setHoverSkole} />
         <aside>Details</aside>
       </main>
-      <footer>Built with OpenLayers</footer>
+      <footer>
+        [ <a href={"https://github.com/jhannes/gis-kata"}>source code</a> ]
+      </footer>
     </>
   );
 }
