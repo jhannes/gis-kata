@@ -33,7 +33,7 @@ export function MapView({
         new TileLayer({ source: new OSM() }),
         new VectorLayer({
           source: new VectorSource({
-            url: "/geojson/vgs.json",
+            url: "/gis-kata/geojson/vgs.json",
             format: new GeoJSON(),
           }),
           style: vgsLayerStyle,

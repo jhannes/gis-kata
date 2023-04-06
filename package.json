@@ -1,15 +1,16 @@
 {
   "name": "gis-kata",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel serve src/index.html",
-    "build:typescript": "tsc --noEmit",
+    "start": "parcel serve src/index.html --public-url /gis-kata/",
     "prettier": "prettier --write src/",
+    "build:typescript": "tsc --noEmit",
     "build:prettier": "prettier --check src/",
-    "build": "npm run build:prettier && npm run build:typescript"
+    "build:parcel": "parcel build src/index.html --public-url /gis-kata/",
+    "build": "npm run build:prettier && npm run build:typescript && npm run build:parcel",
+    "rebuild": "npm run clean && npm run build",
+    "clean": "rimraf .parcel-cache/ dist/"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "parcel-reporter-static-files-copy": "^1.5.0",
     "prettier": "^2.8.7",
     "process": "^0.11.10",
+    "rimraf": "^4.4.1",
     "typescript": "^5.0.3"
   },
   "dependencies": {
