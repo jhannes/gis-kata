@@ -1,4 +1,6 @@
 import React from "react";
+import { Navigation } from "./navigation";
+import { MapView } from "../map";
 
 export function Application() {
   return (
@@ -7,17 +9,8 @@ export function Application() {
         <h1>Hello React Application</h1>
       </header>
       <main>
-        <nav>
-          <h2>Menu</h2>
-          <ul
-            style={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
-            <li>Navigation</li>
-            <div style={{ flex: 1 }} />
-            <li>Settings</li>
-          </ul>
-        </nav>
-        <div id="map">I'm a map</div>
+        <Navigation />
+        <MapView />
         <aside>Details</aside>
       </main>
       <footer>Geographic Web App demo</footer>
