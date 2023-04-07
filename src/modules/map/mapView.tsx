@@ -17,7 +17,7 @@ export function MapView() {
     return new Map({
       layers: [backgroundLayer, vgsLayer],
       view: new View({
-        zoom: 12,
+        zoom: 14,
         center: [10.8, 59.93],
       }),
     });
