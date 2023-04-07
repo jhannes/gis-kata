@@ -1,6 +1,10 @@
 {
   "name": "gis-demo-dryrun",
   "version": "1.0.0",
-  "dependencies": {
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  },
+  "scripts": {
+    "start": "parcel serve src/index.html"
   }
 }
