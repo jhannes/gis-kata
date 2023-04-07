@@ -1,5 +1,13 @@
 import * as React from "react";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { Feature, Map, MapBrowserEvent, Overlay, View } from "ol";
 import { OSM } from "ol/source";
@@ -7,6 +15,7 @@ import TileLayer from "ol/layer/Tile";
 import { useGeographic } from "ol/proj";
 import { vgsLayer } from "./vgsLayer";
 import { MultiPoint } from "ol/geom";
+import { distance } from "ol/coordinate";
 
 useGeographic();
 
@@ -15,7 +24,9 @@ const backgroundLayer = new TileLayer({ source: new OSM() });
 export function MapView({
   onFeatureUnderPointer,
 }: {
-  onFeatureUnderPointer: (value?: Feature<MultiPoint>) => void;
+  onFeatureUnderPointer: Dispatch<
+    SetStateAction<Feature<MultiPoint> | undefined>
+  >;
 }) {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
   const overlayRef = useRef() as MutableRefObject<HTMLDivElement>;
@@ -25,14 +36,31 @@ export function MapView({
 
   function handlePointerMoveOnMap(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel);
-    onFeatureUnderPointer(
-      features.length > 0 ? (features[0] as Feature<MultiPoint>) : undefined
-    );
+    if (features.length > 0) {
+      onFeatureUnderPointer(features[0] as Feature<MultiPoint>);
+    } else {
+      onFeatureUnderPointer((old) => {
+        if (old) {
+          const d = distance(
+            old.getGeometry()?.getCoordinates()[0]!,
+            event.coordinate
+          );
+          if (d < 0.002) {
+            return old;
+          }
+        }
+
+        return undefined;
+      });
+    }
+    map.getViewport().style.cursor = features.length > 0 ? "pointer" : "";
   }
 
   function handleClickOnMap(event: MapBrowserEvent<MouseEvent>) {
     setClickedFeatures(
-      map.getFeaturesAtPixel(event.pixel) as Feature<MultiPoint>[]
+      map.getFeaturesAtPixel(event.pixel, {
+        hitTolerance: 10,
+      }) as Feature<MultiPoint>[]
     );
   }
 
