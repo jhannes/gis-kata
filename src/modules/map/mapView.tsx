@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 
 import { Feature, Map, MapBrowserEvent, View } from "ol";
 import { OSM } from "ol/source";
@@ -12,24 +12,19 @@ useGeographic();
 
 const backgroundLayer = new TileLayer({ source: new OSM() });
 
-export function MapView() {
+export function MapView({
+  onFeatureUnderPointer,
+}: {
+  onFeatureUnderPointer: (value: Feature<MultiPoint>) => void;
+}) {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const [featureUnderPointer, setFeatureUnderPointer] = useState<
-    Feature<MultiPoint> | undefined
-  >();
 
   function handlePointerMoveOnMap(event: MapBrowserEvent<MouseEvent>) {
     const features = map.getFeaturesAtPixel(event.pixel);
-    setFeatureUnderPointer(
+    onFeatureUnderPointer(
       features.length > 0 ? (features[0] as Feature<MultiPoint>) : undefined
     );
   }
-
-  useEffect(() => {
-    console.log({
-      featureUnderPointer: featureUnderPointer?.getProperties()?.skolenavn,
-    });
-  }, [featureUnderPointer]);
 
   const map = useMemo(() => {
     return new Map({
