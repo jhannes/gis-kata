@@ -2,11 +2,16 @@
   "name": "gis-demo-dryrun",
   "version": "1.0.0",
   "devDependencies": {
+    "@types/react-dom": "^18.0.11",
     "parcel": "^2.8.3",
     "typescript": "^5.0.4"
   },
   "scripts": {
     "start": "parcel serve src/index.html",
     "build:typescript": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
