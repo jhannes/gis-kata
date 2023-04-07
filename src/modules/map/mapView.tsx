@@ -8,11 +8,13 @@ import { useGeographic } from "ol/proj";
 
 useGeographic();
 
+const backgroundLayer = new TileLayer({ source: new OSM() });
+
 export function MapView() {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
   const map = useMemo(() => {
     return new Map({
-      layers: [new TileLayer({ source: new OSM() })],
+      layers: [backgroundLayer],
       view: new View({
         zoom: 12,
         center: [10.8, 59.93],
