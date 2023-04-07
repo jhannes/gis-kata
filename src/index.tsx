@@ -1,5 +1,7 @@
 import ReactDOM from "react-dom/client";
 import React from "react";
+import { Application } from "./modules/application";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
-root.render(<h1>Hello React</h1>);
+
+root.render(<Application />);
