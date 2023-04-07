@@ -13,7 +13,7 @@ export function Application() {
             <li>Settings</li>
           </ul>
         </nav>
-        <div id="map" />
+        <div id="map">I'm a map</div>
         <aside>Details</aside>
       </main>
       <footer>Geographic Web App demo</footer>

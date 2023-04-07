@@ -1,0 +1,15 @@
+body {
+    background-color: red;
+}
+
+header, footer {
+    background-color: pink;
+}
+
+nav, aside {
+    background-color: lightcoral;
+}
+
+#map {
+    background-color: lightblue;
+}
