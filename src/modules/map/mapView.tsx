@@ -5,9 +5,7 @@ import { Map, View } from "ol";
 import { OSM } from "ol/source";
 import TileLayer from "ol/layer/Tile";
 import { useGeographic } from "ol/proj";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import { GeoJSON } from "ol/format";
+import { vgsLayer } from "./vgsLayer";
 
 useGeographic();
 
@@ -17,15 +15,7 @@ export function MapView() {
   const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
   const map = useMemo(() => {
     return new Map({
-      layers: [
-        backgroundLayer,
-        new VectorLayer({
-          source: new VectorSource({
-            url: "/geojson/vgs.json",
-            format: new GeoJSON(),
-          }),
-        }),
-      ],
+      layers: [backgroundLayer, vgsLayer],
       view: new View({
         zoom: 12,
         center: [10.8, 59.93],
