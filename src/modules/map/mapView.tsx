@@ -45,7 +45,12 @@ export function MapView({
       }),
     });
   }, []);
-  const overlay = useMemo(() => new Overlay({}), []);
+  const overlay = useMemo(() => {
+    return new Overlay({
+      positioning: "bottom-center",
+      autoPan: true,
+    });
+  }, []);
 
   useEffect(() => {
     map.setTarget(mapRef.current);
@@ -70,7 +75,7 @@ export function MapView({
 
   return (
     <div id="map" ref={mapRef}>
-      <div ref={overlayRef}>
+      <div ref={overlayRef} id="vgs-overlay">
         {clickedFeatures.length > 0 &&
           clickedFeatures
             .map((f) => f.getProperties())

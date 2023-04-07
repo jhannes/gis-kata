@@ -1,0 +1,14 @@
+#vgs-overlay {
+  background-color: white;
+  margin-bottom: 1.5em;
+  text-align: center;
+}
+
+#vgs-overlay:after {
+  content: "";
+  position: absolute;
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-top: 1.2em solid white;
+  transform: translateX(-50%);
+}
