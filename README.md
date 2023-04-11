@@ -15,5 +15,11 @@ The project covers:
 ## Material
 
 * [Running application](https://jhannes.github.io/gis-kata/)
-* [Reference branch](https://github.com/jhannes/gis-kata/tree/reference)
+* [Reference branch](https://github.com/jhannes/gis-kata/tree/tuturial/99-full-featured)
 * [Java backend](https://github.com/jhannes/gis-kata/tree/java-poc) - an old variant showing Jetty and OpenAPI on the server side
+
+## Demonstrations
+
+* 2023-04-11 Høyskolen Kristiania: Features, styles and interactions (2 hours)
+  * [Reference](https://github.com/jhannes/gis-kata/tree/tutorial/01-feature-style-and-interaction)
+  * [Performance](https://github.com/jhannes/gis-kata/tree/performance/2023-M04-kristiania)
