@@ -1,0 +1,19 @@
+
+#overlay {
+    background-color: white;
+    text-align: center;
+    padding: 0.2em;
+    margin-bottom: 1.5em;
+    border-radius: 0.5em;
+    box-shadow: rgba(0,0,0,20%) 5px 5px;
+}
+
+#overlay::after {
+    content: "";
+    border: 1em solid white;
+    position: absolute;
+    border-left: 1em solid transparent;
+    border-right: 1em solid transparent;
+    border-bottom: 0;
+    transform: translateX(-50%);
+}

@@ -1,0 +1,32 @@
+
+header, footer {
+    background-color: magenta;
+    padding: 0.25em;
+}
+
+nav, aside {
+    background-color: goldenrod;
+    min-width: 10em;
+    padding: 0.25em;
+}
+
+
+#map {
+    background-color: lightblue;
+    flex: 1;
+}
+
+main {
+    display: flex;
+}
+
+#root {
+    background-color: lightyellow;
+    height: 100vh;
+    display: grid;
+    grid-auto-rows: auto 1fr auto;
+}
+
+* {
+    margin: 0;
+}

@@ -1,0 +1,36 @@
+{
+  "name": "gis-kata",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel serve src/index.html",
+    "build:typescript": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhannes/gis-kata.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhannes/gis-kata/issues"
+  },
+  "homepage": "https://github.com/jhannes/gis-kata#readme",
+  "devDependencies": {
+    "@types/react": "^18.0.34",
+    "@types/react-dom": "^18.0.11",
+    "parcel": "^2.8.3",
+    "parcel-reporter-static-files-copy": "^1.5.0",
+    "prettier": "^2.8.7",
+    "process": "^0.11.10",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "ol": "^7.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
