@@ -7,6 +7,7 @@ import jakarta.json.JsonValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.util.PGobject;
+import org.slf4j.MDC;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -28,13 +29,19 @@ public class PostgisDemo {
     }
 
     private void run() throws SQLException, IOException {
-        //loadMunicipalities();
+        loadMunicipalities();
         loadCounties();
         log.info("Loading complete");
         findRegions(new double[]{10.8, 59.9});
         findRegions(new double[]{5, 59.9});
         findRegions(new double[]{10.8, 63});
         log.info("complete");
+    }
+
+    private void loadMunicipalities() throws IOException {
+        try (var jsonReader = Json.createReader(Files.newBufferedReader(Path.of("src", "main", "geojson", "kommuner_komprimert.json")))) {
+            insertFeatures(jsonReader.readObject().getJsonArray("features"), "municipality", "kommunenummer");
+        }
     }
 
     private void findRegions(double[] longLat) throws SQLException {
@@ -52,14 +59,15 @@ public class PostgisDemo {
 
     }
 
-    private void loadCounties() throws SQLException, IOException {
+    private void loadCounties() throws IOException {
         try (var jsonReader = Json.createReader(Files.newBufferedReader(Path.of("src", "main", "geojson", "fylker_komprimert.json")))) {
             insertFeatures(jsonReader.readObject().getJsonArray("features"), "county", "fylkesnummer");
         }
     }
 
-    private void insertFeatures(JsonArray features, String type, String codeProperty) throws SQLException {
-        log.info("Loading {}", type);
+    private void insertFeatures(JsonArray features, String type, String codeProperty) {
+        MDC.put("area.type", type);
+        log.info("Loading");
         try (var connection = dataSource.getConnection()) {
             var alreadyPresent = new HashSet<>();
             try (var statement = connection.prepareStatement("select code from areas where type = ?")) {
@@ -78,23 +86,36 @@ public class PostgisDemo {
                     if (alreadyPresent.contains(code)) {
                         continue;
                     }
+                    MDC.put("area.code", code);
+                    var name = getName(properties);
+                    MDC.put("area.name", name);
+                    if (!(jsonValue.asJsonObject().get("geometry") instanceof JsonObject)) {
+                        log.warn("Missing geometry");
+                        continue;
+                    }
 
                     statement.setObject(1, UUID.randomUUID());
                     statement.setObject(2, areaType(type));
                     statement.setString(3, code);
-                    statement.setString(4, properties.getJsonArray("navn")
-                            .stream()
-                            .map(JsonValue::asJsonObject)
-                            .filter(o -> o.getString("sprak").equals("nor"))
-                            .map(o -> o.getString("navn"))
-                            .findFirst()
-                            .orElseThrow());
+                    statement.setString(4, name);
                     statement.setString(5, geoJsonToWtk(jsonValue.asJsonObject().getJsonObject("geometry")));
                     statement.addBatch();
                 }
                 statement.executeBatch();
             }
+        } catch (Exception e) {
+            log.error("Failed to load", e);
         }
+    }
+
+    private static String getName(JsonObject properties) {
+        return properties.getJsonArray("navn")
+                .stream()
+                .map(JsonValue::asJsonObject)
+                .filter(o -> o.getString("sprak").equals("nor"))
+                .map(o -> o.getString("navn"))
+                .findFirst()
+                .orElseThrow();
     }
 
     private static String geoJsonToWtk(JsonObject geometry) {
@@ -123,6 +144,4 @@ public class PostgisDemo {
         result.setValue(value);
         return result;
     }
-
-
 }
