@@ -1,3 +1,5 @@
+CREATE EXTENSION postgis;
+
 create type area_type as enum ('county', 'municipality');
 
 create table areas
@@ -6,5 +8,5 @@ create table areas
     type area_type not null,
     code varchar(30) not null,
     name text not null,
-    bounds polygon null
+    bounds geometry(polygon) null
 );
