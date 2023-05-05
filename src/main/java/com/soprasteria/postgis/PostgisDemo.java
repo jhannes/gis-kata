@@ -1,6 +1,8 @@
 package com.soprasteria.postgis;
 
 import lombok.RequiredArgsConstructor;
+import org.postgresql.geometric.PGpoint;
+import org.postgresql.geometric.PGpolygon;
 import org.postgresql.util.PGobject;
 
 import javax.sql.DataSource;
@@ -37,13 +39,22 @@ public class PostgisDemo {
 
     private void loadCounties() throws SQLException {
         try (var connection = dataSource.getConnection()) {
-            try (var statement = connection.prepareStatement("insert into areas (id, type, name, code) values (?, ?, ?, ?)")) {
+            try (var statement = connection.prepareStatement("insert into areas (id, type, name, code, bounds) values (?, ?, ?, ?, ?)")) {
                 statement.setObject(1, UUID.randomUUID());
                 statement.setObject(2, areaType("county"));
                 statement.setString(3, "Oslo");
                 statement.setString(4, "01");
+                statement.setObject(5, new PGpolygon(new PGpoint[] {
+                        new PGpoint(-1.0d, -1.0d),
+                        new PGpoint( 1.0d, -1.0d),
+                        new PGpoint( 1.0d,  1.0d),
+                        new PGpoint(-1.0d,  1.0d),
+                        new PGpoint(-1.0d, -1.0d)
+                }));
 
-                statement.executeUpdate();
+                statement.addBatch();
+
+                statement.executeBatch();
             }
         }
     }
