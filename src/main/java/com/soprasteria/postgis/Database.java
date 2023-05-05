@@ -2,6 +2,7 @@ package com.soprasteria.postgis;
 
 import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -9,6 +10,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Slf4j
 public class Database {
     @Setter
     private boolean clean = false;
@@ -36,6 +38,7 @@ public class Database {
             if (e.getSQLState().equals("3D000")) {
                 try (Connection connection = masterDataSource.getConnection()) {
                     try (var statement = connection.createStatement()) {
+                        log.info("Creating database {}" , databaseName);
                         statement.executeUpdate("create database " + databaseName + " with owner " + user);
                     }
                 }
@@ -46,6 +49,7 @@ public class Database {
     }
 
     private void deleteDatabase() throws SQLException {
+        log.warn("Deleting database {}" , databaseName);
         try (Connection connection = masterDataSource.getConnection()) {
             try (var statement = connection.createStatement()) {
                 statement.execute("SELECT pg_terminate_backend(pg_stat_activity.pid)\n" +
