@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,17 +26,24 @@ public class PostgisDemo {
     private final DataSource dataSource;
 
     public static void main(String[] args) throws SQLException, IOException {
-        new PostgisDemo(new Database().setClean(true).getDataSource()).run();
+        new PostgisDemo(new Database().setClean(false).getDataSource()).run();
     }
 
     private void run() throws SQLException, IOException {
         loadMunicipalities();
         loadCounties();
         log.info("Loading complete");
-        findRegions(new double[]{10.8, 59.9});
-        findRegions(new double[]{5, 59.9});
-        findRegions(new double[]{10.8, 63});
+        findRegions(createPoint(10.8, 59.9));
+        findRegions(createPoint(5, 59.9));
+        findRegions(createPoint(10.8, 63));
         log.info("complete");
+    }
+
+    private JsonObject createPoint(double longitude, double latitude) {
+        return Json.createObjectBuilder()
+                .add("type", "Point")
+                .add("coordinates", Json.createArrayBuilder(List.of(longitude, latitude)))
+                .build();
     }
 
     private void loadMunicipalities() throws IOException {
@@ -44,11 +52,11 @@ public class PostgisDemo {
         }
     }
 
-    private void findRegions(double[] longLat) throws SQLException {
-        log.info("Regions for " + longLat[0] + ", " + longLat[1]);
+    private void findRegions(JsonObject point) throws SQLException {
+        log.info("Regions for " + point);
         try (var connection = dataSource.getConnection()) {
             try (var statement = connection.prepareStatement("select * from areas where st_contains(bounds, st_geometryfromtext(?))")) {
-                statement.setObject(1, "POINT(" + longLat[0] + " " + longLat[1] + ")");
+                statement.setObject(1, geoJsonToWtk(point));
                 try (var rs = statement.executeQuery()) {
                     while (rs.next()) {
                         log.info(rs.getString("type") + " " + rs.getString("code") + " " + rs.getString("name"));
@@ -105,6 +113,8 @@ public class PostgisDemo {
             }
         } catch (Exception e) {
             log.error("Failed to load", e);
+        } finally {
+            MDC.clear();
         }
     }
 
@@ -119,12 +129,20 @@ public class PostgisDemo {
     }
 
     private static String geoJsonToWtk(JsonObject geometry) {
-        var coordinates = geometry.getJsonArray("coordinates")
-                .stream()
-                .map(s1 -> toWktCoordinateList(s1.asJsonArray()))
-                .map(s -> "(" + s + ")")
-                .collect(Collectors.joining(", "));
-        return "POLYGON(" + coordinates + ")";
+        switch (geometry.getString("type")) {
+            case "Polygon" -> {
+                var coordinates = geometry.getJsonArray("coordinates")
+                        .stream()
+                        .map(s1 -> toWktCoordinateList(s1.asJsonArray()))
+                        .map(s -> "(" + s + ")")
+                        .collect(Collectors.joining(", "));
+                return "POLYGON(" + coordinates + ")";
+            }
+            case "Point" -> {
+                return "POINT(" + toWtkCoordinate(geometry.getJsonArray("coordinates")) + ")";
+            }
+            default -> throw new IllegalArgumentException("Illegal geojson type " + geometry);
+        }
     }
 
     private static String toWktCoordinateList(JsonArray jsonValues) {
