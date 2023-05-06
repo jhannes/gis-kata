@@ -36,7 +36,28 @@ public class PostgisDemo {
         findRegions(createPoint(10.8, 59.9));
         findRegions(createPoint(5, 59.9));
         findRegions(createPoint(10.8, 63));
+
+        findMunicipalities("46");
         log.info("complete");
+    }
+
+    private void findMunicipalities(String countyCode) throws SQLException {
+        log.info("Municipalities in county {}", countyCode);
+        try (var connection = dataSource.getConnection()) {
+            try (var statement = connection.prepareStatement("""
+                    select kommune.*
+                    from areas kommune inner join areas fylke on st_contains(fylke.bounds, kommune.bounds)
+                    where fylke.code = ?
+                    order by kommune.code"""
+            )) {
+                statement.setString(1, countyCode);
+                try (var rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        log.info(rs.getString("type") + " " + rs.getString("code") + " " + rs.getString("name"));
+                    }
+                }
+            }
+        }
     }
 
     private JsonObject createPoint(double longitude, double latitude) {
@@ -53,9 +74,13 @@ public class PostgisDemo {
     }
 
     private void findRegions(JsonObject point) throws SQLException {
-        log.info("Regions for " + point);
+        log.info("Regions for {}", point);
         try (var connection = dataSource.getConnection()) {
-            try (var statement = connection.prepareStatement("select * from areas where st_contains(bounds, st_geometryfromtext(?))")) {
+            try (var statement = connection.prepareStatement("""
+                            select *
+                            from areas
+                            where st_contains(bounds, st_geometryfromtext(?))
+                    """)) {
                 statement.setObject(1, geoJsonToWtk(point));
                 try (var rs = statement.executeQuery()) {
                     while (rs.next()) {
@@ -86,7 +111,13 @@ public class PostgisDemo {
                 }
             }
 
-            try (var statement = connection.prepareStatement("insert into areas (id, type, code, name, bounds) values (?, ?, ?, ?, st_geometryfromtext(?))")) {
+            var sql = """
+                insert into areas
+                    (id, type, code, name, bounds)
+                values
+                    (?, ?, ?, ?, st_geometryfromtext(?))
+                """;
+            try (var statement = connection.prepareStatement(sql)) {
                 for (var jsonValue : features) {
                     var properties = jsonValue.asJsonObject().getJsonObject("properties");
                     var code = properties.getString(codeProperty);
