@@ -1,5 +1,12 @@
 Demonstrates PostGIS used in Java
 
+The demo comes with schemas and data and can be run directly:
+
+1. Start postgis in Docker: `docker run -e POSTGRES_HOST_AUTH=true -p 5432:5432 postgis/postgis`
+2. Import the project into IntelliJ including Maven dependencies
+3. Run `com.soprasteria.postgis.PostgisDemo` as a main class
+
+
 Example output:
 
 ```
@@ -49,3 +56,7 @@ Example output:
 02:12:37.815 [main] [INFO ] [PostgisDemo.findMunicipalities(PostgisDemo.java:56)]: municipality 4650 Gloppen
 02:12:37.815 [main] [INFO ] [PostgisDemo.run(PostgisDemo.java:41)]: complete
 ```
+
+TODO:
+
+* [ ] Include points within a range with the `ST_DWithin` function
